@@ -1,0 +1,51 @@
+<!-- 文件路径: pages/settings/export-selection/export-selection.wxml -->
+<view class="container">
+  <!-- 顶部全选/全不选 -->
+  <view class="select-all-bar">
+    <checkbox-group bindchange="onToggleSelectAll">
+      <label class="checkbox-label">
+        <checkbox value="selectAll" checked="{{isAllSelected}}"/>
+        <text class="select-all-text">全选</text>
+      </label>
+    </checkbox-group>
+    <text class="selected-count">已选择 {{selectedItems.length}} 项</text>
+  </view>
+
+  <!-- 密码凭证列表 -->
+  <scroll-view scroll-y class="vault-list">
+    <checkbox-group bindchange="onItemSelect">
+      <view class="vault-item" wx:for="{{vault}}" wx:key="id">
+        <checkbox value="{{item.id}}" checked="{{item.selected}}" class="item-checkbox"/>
+        <view class="item-content">
+          <view class="item-title">{{item.title}}</view>
+          <view class="item-username">{{item.username}}</view>
+        </view>
+      </view>
+    </checkbox-group>
+    <view wx:if="{{vault.length === 0}}" class="empty-state">
+      <image class="empty-icon" src="/images/empty-box.png"></image>
+      <view class="empty-text">您的保险箱是空的，没有可导出的凭证。</view>
+    </view>
+  </scroll-view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-actions">
+    <button class="export-btn" bindtap="onExport" disabled="{{selectedItems.length === 0}}">
+      导出 ({{selectedItems.length}} 项)
+    </button>
+  </view>
+
+  <!-- 导出密码弹窗 -->
+  <view class="popup-mask" wx:if="{{showExportPasswordPopup}}" bindtap="closeExportPasswordPopup"></view>
+  <view class="popup-container {{showExportPasswordPopup ? 'show' : ''}}">
+    <view class="popup-header">
+      <view class="popup-title">设置导出密码</view>
+      <image class="close-icon" src="/images/close.png" bindtap="closeExportPasswordPopup"></image>
+    </view>
+    <view class="popup-content">
+      <view class="popup-desc">此密码仅用于保护本次导出的数据，请务必牢记。</view>
+      <input class="popup-input" type="text" password placeholder="请输入临时密码" bindinput="onPopupInput" data-field="tempExportPassword" value="{{tempExportPassword}}" />
+      <button class="popup-btn" bindtap="confirmExport">确认并导出</button>
+    </view>
+  </view>
+</view>

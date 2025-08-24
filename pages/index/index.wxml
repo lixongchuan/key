@@ -1,0 +1,147 @@
+<!-- 重新设计的首页布局 -->
+<view class="home-container">
+  <!-- 标题单独一行 -->
+  <view class="title-section">
+    <text class="main-title">密码库</text>
+  </view>
+
+  <!-- 第二行：头像 + 搜索框 + 粉色按钮 -->
+  <view class="action-row">
+    <view class="avatar-wrapper" bindtap="goToAccountCenter">
+      <image class="user-avatar" src="{{userProfile.avatarUrl}}" mode="aspectFill"></image>
+    </view>
+
+    <view class="search-wrapper">
+      <view class="search-input-container">
+        <image class="search-icon" src="/images/icon-search.png"></image>
+        <input class="search-input"
+               placeholder="搜索标题、用户名..."
+               bindinput="onSearchInput"
+               confirm-type="search"/>
+        <view class="filter-btn" bindtap="onShowFilterOptions">
+          <text class="filter-text">{{activeFilter === 'all' ? '全部' : activeFilter === 'favorites' ? '收藏' : '特殊条目'}}</text>
+          <image class="filter-arrow" src="/images/arrow-down.png"></image>
+        </view>
+      </view>
+    </view>
+
+    <view class="add-button-wrapper" bindtap="onAddNew" bindlongpress="showCardSizeMenu" wx:if="{{!selectionMode}}">
+      <image class="add-button-icon" src="/images/icon-plus.png"></image>
+      <!-- 徽章式尺寸指示器 -->
+      <view class="size-badge {{cardSizeMode}}"></view>
+    </view>
+
+    <!-- 选择模式标题 -->
+    <view class="selection-title" wx:if="{{selectionMode}}">
+      <text class="selection-count">已选择 {{selectedItems.length}} 项</text>
+    </view>
+  </view>
+
+  <!-- 密码卡片网格 - 2列布局 -->
+  <view class="content-section">
+
+    <!-- 内容状态 -->
+    <block wx:if="{{filteredVault.length > 0}}">
+      <view class="password-grid">
+        <view class="password-card {{cardSizeMode}}-mode {{selectionMode ? 'selection-mode' : ''}} {{item.selected ? 'selected' : ''}}"
+              wx:for="{{filteredVault}}"
+              wx:key="id"
+              data-id="{{item.id}}"
+              data-item="{{item}}"
+              bindlongpress="onLongPressItem"
+              bindtap="{{selectionMode ? 'onToggleSelection' : (item.type === 'config' || item.type === 'history' ? 'handleSpecialItemTap' : 'onEditItem')}}"
+              data-type="{{item.type}}">
+
+          <!-- 选择模式时的选中指示器 -->
+          <view class="selection-indicator" wx:if="{{selectionMode && item.selected}}">
+            <text class="selection-check">✓</text>
+          </view>
+
+          <!-- 卡片头部 -->
+          <view class="card-header">
+            <view class="site-info">
+              <image class="site-icon"
+                     src="{{item.type === 'config' ? '/images/icon-settings.png' : item.type === 'history' ? '/images/icon-history.png' : '/images/icon-world.png'}}"></image>
+              <text class="site-title">{{item.title}}</text>
+            </view>
+            <view class="card-actions" wx:if="{{!selectionMode}}">
+              <image class="favorite-btn"
+                     src="{{item.isFavorite ? '/images/star-active.png' : '/images/star-inactive.png'}}"
+                     catchtap="onToggleFavorite"
+                     data-id="{{item.id}}"
+                     data-item="{{item}}"></image>
+            </view>
+          </view>
+
+          <!-- 卡片主体 -->
+          <view class="card-content">
+            <view class="credential-field">
+              <text class="field-label">{{item.type === 'config' ? '配置类型' : item.type === 'history' ? '密码类型' : '用户名'}}</text>
+              <text class="field-value">{{item.username}}</text>
+            </view>
+            <!-- 特殊条目详细信息 -->
+            <view class="special-info" wx:if="{{item.type === 'config' || item.type === 'history'}}">
+              <text class="info-text">{{item.displayInfo}}</text>
+            </view>
+            <view class="tags-section" wx:if="{{item.tags && item.tags.length > 0}}">
+              <scroll-view class="tags-scroll" scroll-x>
+                <view class="tag-item" wx:for="{{item.tags}}" wx:key="*this">
+                  {{item}}
+                </view>
+              </scroll-view>
+            </view>
+          </view>
+
+          <!-- 卡片底部 -->
+          <view class="card-footer" wx:if="{{!selectionMode}}">
+            <button class="copy-button"
+                    data-password="{{item.password}}"
+                    data-item="{{item}}"
+                    catchtap="onCopyPassword">
+              <text class="copy-text">复制密码</text>
+            </button>
+          </view>
+        </view>
+      </view>
+
+      <!-- 批量操作工具栏 -->
+      <view class="batch-toolbar {{selectionMode ? 'show' : ''}}">
+        <view class="toolbar-content">
+          <view class="toolbar-buttons">
+            <button class="toolbar-btn select-all-btn" bindtap="onToggleSelectAll">
+              <text class="select-all-text">
+                {{selectedItems.length === filteredVault.length ? '取消全选' : '全选'}}
+              </text>
+            </button>
+            <button class="toolbar-btn delete-btn" bindtap="onBatchDelete" wx:if="{{selectedItems.length > 0}}">
+              <text class="delete-text">删除({{selectedItems.length}})</text>
+            </button>
+            <button class="toolbar-btn cancel-btn" bindtap="exitSelectionMode">
+              <text class="cancel-text">取消</text>
+            </button>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <block wx:else>
+      <view class="empty-state">
+        <view class="empty-visual">
+          <image class="empty-icon" src="/images/empty-box.png"></image>
+        </view>
+        <view class="empty-content">
+          <text class="empty-title">
+            {{activeFilter === 'all' ? '您的保险箱是空的' : activeFilter === 'favorites' ? '暂无收藏条目' : '暂无特殊条目'}}
+          </text>
+          <text class="empty-subtitle" wx:if="{{activeFilter === 'all'}}">
+            点击右上角"+"按钮开始添加您的第一条密码
+          </text>
+          <text class="empty-subtitle" wx:elif="{{activeFilter === 'special'}}">
+            使用工具页面保存配置后将在此显示
+          </text>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

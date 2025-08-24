@@ -1,0 +1,7 @@
+<view class="container">
+  <view class="qrcode-wrapper">
+    <canvas type="2d" id="qrcode-canvas" style="width: 250px; height: 250px;"></canvas>
+  </view>
+  <view class="tip-text" wx:if="{{showSaveTip}}">长按二维码可保存到相册</view>
+  <button class="save-btn" bindtap="saveQRCode">保存到相册</button>
+</view>

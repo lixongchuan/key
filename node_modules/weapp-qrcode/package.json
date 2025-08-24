@@ -1,0 +1,50 @@
+{
+  "name": "weapp-qrcode",
+  "version": "1.0.0",
+  "description": "generate qrcode in weapp",
+  "main": "dist/weapp.qrcode.common.js",
+  "module": "dist/weapp.qrcode.esm.js",
+  "scripts": {
+    "dev": "rollup --config build/rollup.dev.config.js -w",
+    "build": "rollup --config build/rollup.prod.config.js",
+    "publish": "rollup --config build/rollup.dev.config.js & npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yingye/weapp-qrcode.git"
+  },
+  "keywords": [
+    "wechat",
+    "weapp",
+    "qrcode",
+    "canvas"
+  ],
+  "author": "yingye",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yingye/weapp-qrcode/issues"
+  },
+  "homepage": "https://github.com/yingye/weapp-qrcode#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.1",
+    "eslint": "^4.16.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "rollup": "^0.55.1",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-commonjs": "^8.3.0",
+    "rollup-plugin-eslint": "^4.0.0",
+    "rollup-plugin-license": "^0.6.0",
+    "rollup-plugin-node-resolve": "^3.0.2",
+    "rollup-plugin-replace": "^2.0.0",
+    "rollup-plugin-uglify": "^3.0.0"
+  },
+  "dependencies": {
+    "extend": "^3.0.2"
+  }
+}

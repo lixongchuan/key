@@ -1,0 +1,101 @@
+<!-- 双重认证主密码修改界面 - Apple毛玻璃风格 -->
+<view class="page">
+  <view class="header">
+    <text class="title">修改主密码</text>
+    <text class="subtitle">请选择认证方式并设置新密码</text>
+  </view>
+
+  <view class="card">
+    <!-- 认证方式选择 -->
+    <view class="auth-section">
+      <text class="section-title">请选择认证方式</text>
+      <text class="section-subtitle">至少选择一种方式进行身份验证</text>
+
+      <view class="auth-methods">
+        <!-- 输入密码方式 -->
+        <view class="auth-method" bindtap="selectAuthMethod" data-method="password">
+          <view class="method-left">
+            <view class="method-icon">🔑</view>
+            <view class="method-info">
+              <text class="method-title">输入当前密码</text>
+              <text class="method-desc">输入您当前的主密码</text>
+            </view>
+          </view>
+          <view class="radio {{authMethod === 'password' ? 'checked' : ''}}"></view>
+        </view>
+
+        <!-- 生物识别方式 -->
+        <view class="auth-method {{!biometricSupported ? 'disabled' : ''}}" bindtap="selectAuthMethod" data-method="biometric">
+          <view class="method-left">
+            <view class="method-icon">👆</view>
+            <view class="method-info">
+              <text class="method-title">生物识别验证</text>
+              <text class="method-desc">{{biometricSupported ? '使用指纹进行验证' : '设备不支持生物识别'}}</text>
+            </view>
+          </view>
+          <view class="radio {{authMethod === 'biometric' ? 'checked' : ''}} {{!biometricSupported ? 'disabled' : ''}}"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="divider"></view>
+
+    <!-- 认证输入区域 -->
+    <block wx:if="{{authMethod === 'password'}}">
+      <view class="field">
+        <text class="label">当前主密码</text>
+        <input class="input" password="{{!showOld}}" value="{{oldPassword}}" bindinput="onInputOld" placeholder="请输入当前主密码" />
+        <image class="eye" src="{{showOld ? '/images/eye-open.png' : '/images/eye-close.png'}}" bindtap="toggleShowOld" />
+      </view>
+    </block>
+
+    <block wx:elif="{{authMethod === 'biometric'}}">
+      <view class="biometric-auth">
+        <view class="biometric-status">
+          <image class="biometric-icon" src="/images/icon-biometrics.png"></image>
+          <text class="biometric-text">
+            {{biometricVerified ? '✓ 生物识别验证成功' : '点击下方按钮进行指纹验证'}}
+          </text>
+        </view>
+        <button class="biometric-btn {{biometricVerified ? 'verified' : ''}}"
+                bindtap="performBiometricAuth"
+                disabled="{{biometricVerified}}">
+          {{biometricVerified ? '已验证' : '开始验证'}}
+        </button>
+      </view>
+    </block>
+
+    <view class="divider"></view>
+
+    <!-- 新密码输入区域 -->
+    <view class="field">
+      <text class="label">新主密码</text>
+      <input class="input" password="{{!showNew}}" value="{{newPassword}}" bindinput="onInputNew" placeholder="至少8个字符，建议包含大小写/数字/符号" />
+      <image class="eye" src="{{showNew ? '/images/eye-open.png' : '/images/eye-close.png'}}" bindtap="toggleShowNew" />
+    </view>
+
+    <!-- 密码强度显示 -->
+    <view class="strength" wx:if="{{newPassword && newPassword.length > 0}}">
+      <view class="bar {{strength >= 1 ? 'on' : ''}}"></view>
+      <view class="bar {{strength >= 2 ? 'on' : ''}}"></view>
+      <view class="bar {{strength >= 3 ? 'on' : ''}}"></view>
+      <view class="bar {{strength >= 4 ? 'on' : ''}}"></view>
+      <text class="strength-text">{{ strengthText }}</text>
+    </view>
+
+    <view class="divider"></view>
+
+    <view class="field">
+      <text class="label">确认新主密码</text>
+      <input class="input" password="{{!showConfirm}}" value="{{confirmPassword}}" bindinput="onInputConfirm" placeholder="请再次输入新主密码" />
+      <image class="eye" src="{{showConfirm ? '/images/eye-open.png' : '/images/eye-close.png'}}" bindtap="toggleShowConfirm" />
+    </view>
+
+    <view class="divider"></view>
+
+    <!-- 修改主密码按钮 -->
+    <button class="primary" loading="{{isProcessing}}" disabled="{{!canSubmit || isProcessing}}" bindtap="submit">
+      {{ isProcessing ? '正在修改密码...' : '修改主密码' }}
+    </button>
+  </view>
+</view>

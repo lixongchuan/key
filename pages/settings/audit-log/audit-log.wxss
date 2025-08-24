@@ -1,0 +1,352 @@
+/* 苹果潮流大牌风格的操作日志页面 */
+.audit-log-page {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.audit-log-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(0,0,0,0.02)"/><circle cx="80" cy="40" r="1" fill="rgba(0,0,0,0.02)"/><circle cx="40" cy="80" r="1.5" fill="rgba(0,0,0,0.02)"/></svg>');
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* 顶部标题区域 */
+.header-section {
+  text-align: center;
+  padding: 80rpx 0 60rpx;
+  color: white;
+  position: relative;
+  z-index: 1;
+}
+
+.page-title {
+  font-size: 42rpx;
+  font-weight: 700;
+  margin-bottom: 16rpx;
+  color: #1a202c; /* 使用深色，确保在任何背景上都清晰可见 */
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1); /* 添加阴影增强对比度 */
+}
+
+.page-subtitle {
+  font-size: 26rpx;
+  color: #333333;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 8rpx 16rpx;
+  border-radius: 12rpx;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* 主要内容区域 */
+.content-section {
+  padding: 0 32rpx 120rpx;
+  position: relative;
+  z-index: 1;
+}
+
+/* 统计卡片 */
+.stats-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+  border: 1rpx solid rgba(255, 255, 255, 0.2);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20rpx;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 20rpx 16rpx;
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: 16rpx;
+}
+
+.stat-number {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #667eea;
+  line-height: 1;
+  margin-bottom: 8rpx;
+  display: block;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+/* 日志容器 */
+.logs-container {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+  border: 1rpx solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 32rpx;
+}
+
+/* 日志滚动视图 */
+.logs-scroll-view {
+  height: calc(100vh - 400rpx); /* 动态高度：视窗高度减去标题、统计卡片、按钮等区域 */
+  max-height: 600rpx; /* 最大高度限制 */
+  min-height: 300rpx; /* 最小高度限制 */
+}
+
+/* 滚动条样式 */
+.logs-scroll-view::-webkit-scrollbar {
+  width: 6rpx;
+}
+
+.logs-scroll-view::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3rpx;
+}
+
+.logs-scroll-view::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 3rpx;
+}
+
+.logs-scroll-view::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.5);
+}
+
+/* 日志项 */
+.log-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 32rpx 24rpx;
+  border-bottom: 1rpx solid rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.log-item:last-child {
+  border-bottom: none;
+}
+
+/* 时间线 */
+.timeline {
+  flex-shrink: 0;
+  width: 60rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 20rpx;
+}
+
+.timeline-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  position: relative;
+  z-index: 2;
+}
+
+.timeline-line {
+  width: 2rpx;
+  flex: 1;
+  background: linear-gradient(to bottom, rgba(102, 126, 234, 0.3), transparent);
+  margin-top: 8rpx;
+}
+
+/* 时间线点颜色 */
+.timeline-dot.login_success { background: #48bb78; }
+.timeline-dot.login_fail { background: #f56565; }
+.timeline-dot.export_full,
+.timeline-dot.import_single,
+.timeline-dot.export_single_item_qrcode { background: #4299e1; }
+.timeline-dot.change_master_password { background: #ed8936; }
+.timeline-dot.enable_biometrics { background: #9f7aea; }
+.timeline-dot.disable_biometrics { background: #e53e3e; }
+/* 新增密码管理操作颜色 */
+.timeline-dot.add_password { background: #38a169; }
+.timeline-dot.delete_password { background: #e53e3e; }
+.timeline-dot.edit_password { background: #3182ce; }
+.timeline-dot.copy_password { background: #805ad5; }
+.timeline-dot.generate_password { background: #d69e2e; }
+.timeline-dot.view_password_history { background: #319795; }
+/* 新增用户相关操作颜色 */
+.timeline-dot.update_profile { background: #718096; }
+.timeline-dot.change_avatar { background: #805ad5; }
+.timeline-dot.view_security_report { background: #2d3748; }
+.timeline-dot.export_audit_log { background: #4299e1; }
+.timeline-dot.clear_audit_log { background: #c53030; }
+
+/* 日志内容 */
+.log-content {
+  flex: 1;
+}
+
+.log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.log-time {
+  font-size: 22rpx;
+  color: #718096;
+  font-weight: 500;
+}
+
+.log-action {
+  padding: 6rpx 12rpx;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.action-text {
+  color: white;
+  line-height: 1;
+}
+
+/* 操作类型颜色 */
+.log-action.login_success { background: rgba(72, 187, 120, 0.9); }
+.log-action.login_fail { background: rgba(245, 101, 101, 0.9); }
+.log-action.export_full,
+.log-action.import_single,
+.log-action.export_single_item_qrcode { background: rgba(66, 153, 225, 0.9); }
+.log-action.change_master_password { background: rgba(237, 137, 54, 0.9); }
+.log-action.enable_biometrics { background: rgba(159, 122, 234, 0.9); }
+.log-action.disable_biometrics { background: rgba(229, 62, 62, 0.9); }
+/* 新增密码管理操作颜色 */
+.log-action.add_password { background: rgba(56, 161, 105, 0.9); }
+.log-action.delete_password { background: rgba(229, 62, 62, 0.9); }
+.log-action.edit_password { background: rgba(49, 130, 206, 0.9); }
+.log-action.copy_password { background: rgba(128, 90, 213, 0.9); }
+.log-action.generate_password { background: rgba(214, 158, 46, 0.9); }
+.log-action.view_password_history { background: rgba(49, 151, 149, 0.9); }
+/* 新增用户相关操作颜色 */
+.log-action.update_profile { background: rgba(113, 128, 150, 0.9); }
+.log-action.change_avatar { background: rgba(128, 90, 213, 0.9); }
+.log-action.view_security_report { background: rgba(45, 55, 72, 0.9); }
+.log-action.export_audit_log { background: rgba(66, 153, 225, 0.9); }
+.log-action.clear_audit_log { background: rgba(197, 48, 48, 0.9); }
+
+.log-details {
+  font-size: 26rpx;
+  color: #4a5568;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 40rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 80rpx;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1rpx solid rgba(255, 255, 255, 0.2);
+  border-radius: 20rpx;
+  color: #667eea;
+  font-size: 28rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  transition: all 0.2s ease;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+.action-btn.secondary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.action-btn.danger {
+  background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+  color: white;
+}
+
+.btn-icon {
+  width: 36rpx;
+  height: 36rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 40rpx;
+  text-align: center;
+}
+
+.empty-icon-wrapper {
+  width: 120rpx;
+  height: 120rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+}
+
+.empty-icon {
+  width: 64rpx;
+  height: 64rpx;
+  opacity: 0.6;
+}
+
+.empty-title {
+  font-size: 32rpx;
+  color: #4a5568;
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+.empty-subtitle {
+  font-size: 26rpx;
+  color: #718096;
+  line-height: 1.4;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .content-section {
+    padding: 0 24rpx 100rpx;
+  }
+
+  .stats-card {
+    grid-template-columns: 1fr;
+    gap: 16rpx;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .action-btn {
+    height: 72rpx;
+  }
+}

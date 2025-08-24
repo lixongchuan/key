@@ -1,0 +1,171 @@
+<!-- 文件路径: pages/edit/edit.wxml -->
+<view wx:if="{{pageReady}}" class="page-container">
+  <!-- 页面主体内容 - 固定布局不滚动 -->
+  <view class="main-content">
+
+    <!-- 表单输入区域 -->
+    <view class="input-section">
+      <view class="form-item">
+        <image class="item-icon" src="/images/icon-title.png"></image>
+        <input value="{{formData.title}}" class="form-input" placeholder="请输入标题（例如：谷歌邮箱）" bindinput="onFieldChange" data-field="title"/>
+      </view>
+
+      <view class="form-item">
+        <image class="item-icon" src="/images/icon-user.png"></image>
+        <input value="{{formData.username}}" class="form-input" placeholder="请输入用户名/账号" bindinput="onFieldChange" data-field="username"/>
+      </view>
+
+      <view class="form-item">
+        <image class="item-icon" src="/images/icon-password.png"></image>
+        <input value="{{password_for_input}}" class="form-input" placeholder="请输入或生成强密码" type="{{ showPassword ? 'text' : 'password' }}" bindinput="onPasswordInput"/>
+        <view class="password-actions">
+          <!-- 历史记录按钮 -->
+          <view wx:if="{{isEditMode && passwordHistory && passwordHistory.length > 0}}" class="history-link" bindtap="openHistoryPopup">历史</view>
+          <image class="action-icon" src="/images/copy.png" bindtap="onCopyPasswordInForm"></image>
+          <image class="action-icon" src="{{ showPassword ? '/images/eye-open.png' : '/images/eye-close.png' }}" bindtap="toggleShowPassword"></image>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <image class="item-icon" src="/images/icon-url.png"></image>
+        <input value="{{formData.url}}" class="form-input" placeholder="平台地址(URL)，可选" bindinput="onFieldChange" data-field="url"/>
+      </view>
+    </view>
+
+    <!-- 密码操作区域 -->
+    <view class="password-section">
+      <view class="guide-text">
+        <text>还在为新密码发愁？试试一键生成安全又好记的强密码吧！</text>
+      </view>
+      <button class="generate-btn" type="default" bindtap="openGenerator">
+        <image class="btn-icon" src="/images/icon-generate.png"></image>
+        <text class="btn-text">生成强密码</text>
+      </button>
+    </view>
+
+    <!-- 附加信息区域 - 展开状态 -->
+    <view class="additional-section">
+      <view class="section-header" bindtap="toggleAdditionalInfo">
+        <view class="section-title">
+          <image class="item-icon" src="/images/icon-notes.png"></image>
+          <text>附加信息 (备注/标签/自定义)</text>
+        </view>
+        <image class="arrow-icon {{isAdditionalInfoExpanded ? 'expanded' : ''}}" src="/images/arrow-down.png"></image>
+      </view>
+
+      <!-- 附加信息内容 -->
+      <view wx:if="{{isAdditionalInfoExpanded}}" class="additional-content">
+        <!-- Tab切换 -->
+        <view class="tab-control">
+          <view class="tab-item {{activeTab === 'notes' ? 'active' : ''}}" data-tab="notes" bindtap="switchTab">备注</view>
+          <view class="tab-item {{activeTab === 'customFields' ? 'active' : ''}}" data-tab="customFields" bindtap="switchTab">自定义</view>
+        </view>
+
+        <!-- Tab内容 - 内部可滚动 -->
+        <view class="tab-content">
+          <!-- 备注内容 -->
+          <view wx:if="{{activeTab === 'notes'}}" class="tab-panel">
+            <scroll-view scroll-y class="internal-scroll" show-scrollbar="{{false}}">
+              <textarea value="{{formData.notes}}" class="form-textarea" placeholder="可以填写安全问题、密保邮箱等..." bindinput="onFieldChange" data-field="notes" />
+            </scroll-view>
+          </view>
+
+          <!-- 自定义字段内容 -->
+          <view wx:if="{{activeTab === 'customFields'}}" class="tab-panel">
+            <scroll-view scroll-y class="internal-scroll" show-scrollbar="{{false}}">
+              <view class="custom-fields">
+                <view class="custom-field-item" wx:for="{{formData.customFields}}" wx:key="index">
+                  <input class="field-input field-label" placeholder="字段名" value="{{item.label}}" data-index="{{index}}" data-key="label" bindinput="onCustomFieldChange" />
+                  <input class="field-input field-value" placeholder="字段值" value="{{item.value}}" data-index="{{index}}" data-key="value" bindinput="onCustomFieldChange" />
+                  <view class="field-remove" data-index="{{index}}" bindtap="removeCustomField">
+                    <image class="remove-icon" src="/images/icon-remove-circle.png"></image>
+                  </view>
+                </view>
+              </view>
+              <view class="add-field-btn" bindtap="addCustomField">
+                <image class="add-icon" src="/images/icon-add-circle.png"></image>
+                <text>添加字段</text>
+              </view>
+            </scroll-view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部保存按钮 -->
+  <view class="bottom-actions">
+    <button class="save-btn" bindtap="onSave" disabled="{{isSaving}}">
+      <image class="btn-icon" src="/images/icon-save.png"></image>
+      保存
+    </button>
+    <button class="delete-btn" wx:if="{{isEditMode}}" bindtap="onDelete">删除</button>
+  </view>
+
+  <!-- 密码生成器弹窗 - 只在点击时显示 -->
+  <view wx:if="{{showGenerator}}" class="popup-overlay" bindtap="closeGenerator"></view>
+  <view wx:if="{{showGenerator}}" class="popup-container {{showGenerator ? 'show' : ''}}">
+    <view class="popup-content">
+      <view class="popup-header">
+        <view class="popup-title">强密码生成器</view>
+        <image class="popup-close" src="/images/close.png" bindtap="closeGenerator"></image>
+      </view>
+
+      <view class="password-display" bindtap="copyGeneratedPasswordInPopup">
+        <text wx:if="{{!generatedPassword}}" class="password-placeholder">点击生成密码</text>
+        <text wx:else class="password-text">{{generatedPassword}}</text>
+      </view>
+
+      <view class="password-options">
+        <view class="option-item">
+          <text class="option-label">密码长度:</text>
+          <input class="length-input {{isLengthInvalid ? 'invalid' : ''}}"
+                 type="number"
+                 value="{{passwordLength}}"
+                 placeholder="4-128"
+                 bindinput="onLengthChange"
+                 bindblur="onLengthBlur"
+                 maxlength="3"/>
+        </view>
+
+        <view class="checkbox-group">
+          <checkbox-group bindchange="onCheckboxChange">
+            <label class="checkbox-item"><checkbox value="uppercase" checked="{{useUppercase}}"/>大写字母 (A-Z)</label>
+            <label class="checkbox-item"><checkbox value="lowercase" checked="{{useLowercase}}"/>小写字母 (a-z)</label>
+            <label class="checkbox-item"><checkbox value="numbers" checked="{{useNumbers}}"/>数字 (0-9)</label>
+            <label class="checkbox-item"><checkbox value="symbols" checked="{{useSymbols}}"/>符号 (!@#$)</label>
+          </checkbox-group>
+        </view>
+      </view>
+
+      <view class="popup-actions">
+        <button class="generate-action-btn" bindtap="generatePassword">{{ generatedPassword ? '重新生成' : '生成' }}</button>
+        <button class="use-action-btn" bindtap="useGeneratedPassword" disabled="{{!generatedPassword}}">使用密码</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 历史密码记录弹窗 -->
+  <view wx:if="{{showHistoryPopup}}" class="popup-overlay" bindtap="closeHistoryPopup"></view>
+  <view wx:if="{{showHistoryPopup}}" class="popup-container {{showHistoryPopup ? 'show' : ''}}">
+    <view class="popup-content">
+      <view class="popup-header">
+        <view class="popup-title">密码历史记录</view>
+        <image class="popup-close" src="/images/close.png" bindtap="closeHistoryPopup"></image>
+      </view>
+
+      <scroll-view scroll-y class="history-list" show-scrollbar="{{false}}">
+        <view class="history-item" wx:for="{{passwordHistory}}" wx:key="index">
+          <view class="history-info">
+            <view class="history-password">{{item.password}}</view>
+            <view class="history-date">{{item.formattedDate}}</view>
+          </view>
+          <view class="history-actions">
+            <button class="history-btn copy-btn" data-password="{{item.password}}" bindtap="copyHistoryPassword">复制</button>
+            <button class="history-btn use-btn" data-password="{{item.password}}" bindtap="useHistoryPassword">使用</button>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</view>

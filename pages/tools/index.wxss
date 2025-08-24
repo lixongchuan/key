@@ -1,0 +1,62 @@
+/* 文件路径: pages/tools/index.wxss (完整可复用版) */
+page {
+  background-color: #f7f8fa;
+}
+
+.container {
+  padding: 30rpx;
+}
+
+.page-title {
+  font-size: 48rpx;
+  font-weight: bold;
+  margin-bottom: 40rpx;
+  padding: 0 10rpx;
+}
+
+.tool-list {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  padding: 0 30rpx;
+}
+
+.tool-item {
+  display: flex;
+  align-items: center;
+  padding: 40rpx 0;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.tool-item:last-child {
+  border-bottom: none;
+}
+
+.tool-icon {
+  width: 56rpx;
+  height: 56rpx;
+  margin-right: 30rpx;
+  flex-shrink: 0; /* 防止图标被压缩 */
+}
+
+.tool-info {
+  flex: 1;
+}
+
+.tool-name {
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.tool-desc {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.4;
+}
+
+.arrow-right {
+  width: 32rpx;
+  height: 32rpx;
+  flex-shrink: 0; /* 防止箭头被压缩 */
+  margin-left: 20rpx;
+}

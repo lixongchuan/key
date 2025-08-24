@@ -1,0 +1,104 @@
+<!-- 现代化强密码生成器 -->
+<view class="modern-generator-page">
+  <!-- 页面标题 -->
+  <view class="generator-header">
+    <text class="generator-title">密码生成器</text>
+  </view>
+
+  <!-- 密码显示区域 -->
+  <view class="modern-generator-container">
+    <view class="password-display-card" bindtap="copyGeneratedPassword">
+      <view class="generated-password-display">
+        <text wx:if="{{!generatedPassword}}" class="placeholder-text">点击下方按钮生成强密码</text>
+        <text wx:else>{{generatedPassword}}</text>
+      </view>
+
+      <!-- 密码强度指示器 -->
+      <view wx:if="{{generatedPassword}}" class="password-strength">
+        <view class="strength-indicator">
+          <text class="strength-label">密码强度:</text>
+          <view class="strength-bar">
+            <view class="strength-fill" style="width: {{passwordStrength}}%"></view>
+          </view>
+          <text class="strength-text">{{passwordStrengthText}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 生成器选项 -->
+    <view class="generator-options">
+      <!-- 密码长度选项 -->
+      <view class="option-card">
+        <view class="length-option">
+          <view class="length-header">
+            <text class="length-label">密码长度</text>
+            <text class="length-value">{{passwordLength}} 位</text>
+          </view>
+          <slider
+            class="length-slider"
+            value="{{passwordLength}}"
+            min="8"
+            max="24"
+            bindchange="onLengthChange"
+            bindchanging="onLengthChanging"
+            show-value="false"
+            activeColor="#667eea"
+            backgroundColor="rgba(0,0,0,0.1)"
+            block-color="#667eea"
+            block-size="28"
+          />
+        </view>
+      </view>
+
+      <!-- 字符类型选项 -->
+      <view class="option-card">
+        <view class="character-options">
+          <view class="option-row">
+            <view class="character-toggle {{useUppercase ? 'active' : ''}}" bindtap="toggleCharacterType" data-type="uppercase">
+              <text class="toggle-icon">A</text>
+              <text class="toggle-label">大写</text>
+            </view>
+            <view class="character-toggle {{useLowercase ? 'active' : ''}}" bindtap="toggleCharacterType" data-type="lowercase">
+              <text class="toggle-icon">a</text>
+              <text class="toggle-label">小写</text>
+            </view>
+          </view>
+          <view class="option-row">
+            <view class="character-toggle {{useNumbers ? 'active' : ''}}" bindtap="toggleCharacterType" data-type="numbers">
+              <text class="toggle-icon">1</text>
+              <text class="toggle-label">数字</text>
+            </view>
+            <view class="character-toggle {{useSymbols ? 'active' : ''}}" bindtap="toggleCharacterType" data-type="symbols">
+              <text class="toggle-icon">!</text>
+              <text class="toggle-label">符号</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 生成按钮 -->
+    <view class="generator-actions">
+      <button class="generate-btn" bindtap="generatePassword">
+        <image class="btn-icon" src="/images/icon-generate.png"></image>
+        <text>{{ generatedPassword ? '重新生成' : '生成密码' }}</text>
+      </button>
+    </view>
+
+    <!-- 功能按钮区域 -->
+    <view wx:if="{{generatedPassword}}" class="action-buttons">
+      <button class="action-btn" bindtap="copyGeneratedPassword">
+        <image class="btn-icon" src="/images/icon-copy.png"></image>
+        <text>复制</text>
+      </button>
+      <button class="action-btn" bindtap="savePassword">
+        <image class="btn-icon" src="/images/icon-save.png"></image>
+        <text>保存</text>
+      </button>
+      <button class="action-btn" bindtap="viewSavedPasswords">
+        <image class="btn-icon" src="/images/icon-notes.png"></image>
+        <text>历史</text>
+      </button>
+    </view>
+  </view>
+</view>

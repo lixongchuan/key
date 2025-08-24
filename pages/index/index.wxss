@@ -1,0 +1,898 @@
+/* 全新首页布局设计 */
+.home-container {
+  min-height: 100vh;
+  background: #f8fafc;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* 标题单独一行 */
+.title-section {
+  padding: 40rpx 40rpx 15rpx;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  border-bottom: 1rpx solid rgba(0, 0, 0, 0.1);
+}
+
+.main-title {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #1d1d1f;
+  letter-spacing: -0.5rpx;
+}
+
+/* 第二行：头像 + 搜索框 + 粉色按钮 */
+.action-row {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 40rpx 40rpx;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  border-bottom: 1rpx solid rgba(0, 0, 0, 0.1);
+  gap: 24rpx;
+}
+
+.avatar-wrapper {
+  flex-shrink: 0;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2rpx solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.user-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.search-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: rgba(142, 142, 147, 0.12);
+  border-radius: 20rpx;
+  padding: 20rpx 24rpx;
+  backdrop-filter: blur(10rpx);
+  -webkit-backdrop-filter: blur(10rpx);
+  border: 1rpx solid rgba(142, 142, 147, 0.2);
+}
+
+.search-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 16rpx;
+  opacity: 0.6;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 32rpx;
+  color: #1d1d1f;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+}
+
+.search-input::placeholder {
+  color: rgba(142, 142, 147, 0.8);
+}
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 16rpx;
+  background: rgba(142, 142, 147, 0.2);
+  border-radius: 16rpx;
+  margin-left: 16rpx;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:active {
+  background: rgba(142, 142, 147, 0.3);
+}
+
+.filter-text {
+  font-size: 26rpx;
+  color: #1d1d1f;
+  font-weight: 500;
+  margin-right: 8rpx;
+}
+
+.filter-arrow {
+  width: 24rpx;
+  height: 24rpx;
+  opacity: 0.6;
+}
+
+.add-button-wrapper {
+  flex-shrink: 0;
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 157, 0.3);
+}
+
+.add-button-icon {
+  width: 36rpx;
+  height: 36rpx;
+}
+
+.add-button-wrapper:active {
+  transform: scale(0.95);
+}
+
+/* 顶部导航栏 - 苹果风格 */
+.top-navigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  border-bottom: 1rpx solid rgba(0, 0, 0, 0.1);
+  padding: 60rpx 40rpx 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-left {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2rpx solid rgba(0, 0, 0, 0.1);
+}
+
+.user-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.nav-center {
+  flex: 1;
+  text-align: center;
+  margin: 0 20rpx;
+}
+
+.nav-title {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  letter-spacing: -0.5rpx;
+}
+
+.nav-right {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #007aff;
+  box-shadow: 0 4rpx 12rpx rgba(0, 122, 255, 0.3);
+}
+
+.add-icon {
+  width: 36rpx;
+  height: 36rpx;
+}
+
+.nav-right:active {
+  transform: scale(0.95);
+}
+
+/* 搜索区域 - 苹果风格 */
+.search-section {
+  padding: 140rpx 40rpx 40rpx;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  border-bottom: 1rpx solid rgba(0, 0, 0, 0.1);
+}
+
+.search-container {
+  max-width: 100%;
+}
+
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: rgba(142, 142, 147, 0.12);
+  border-radius: 20rpx;
+  padding: 20rpx 24rpx;
+  backdrop-filter: blur(10rpx);
+  -webkit-backdrop-filter: blur(10rpx);
+  border: 1rpx solid rgba(142, 142, 147, 0.2);
+}
+
+.search-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 16rpx;
+  opacity: 0.6;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 32rpx;
+  color: #1d1d1f;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+}
+
+.search-input::placeholder {
+  color: rgba(142, 142, 147, 0.8);
+}
+
+.filter-trigger {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 16rpx;
+  background: rgba(142, 142, 147, 0.2);
+  border-radius: 16rpx;
+  margin-left: 16rpx;
+  transition: all 0.2s ease;
+}
+
+.filter-trigger:active {
+  background: rgba(142, 142, 147, 0.3);
+}
+
+.filter-text {
+  font-size: 26rpx;
+  color: #1d1d1f;
+  font-weight: 500;
+  margin-right: 8rpx;
+}
+
+.filter-arrow {
+  width: 24rpx;
+  height: 24rpx;
+  opacity: 0.6;
+}
+
+/* 密码卡片网格 - 2列布局 */
+.content-section {
+  padding: 32rpx;
+}
+
+.password-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+  padding-bottom: 120rpx;
+}
+
+.password-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  border-radius: 20rpx;
+  padding: 24rpx;
+  box-shadow: 0 6rpx 24rpx rgba(0, 0, 0, 0.08);
+  border: 1rpx solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* 特殊条目的样式 */
+.password-card[data-type="config"] {
+  background: rgba(142, 142, 147, 0.08);
+  border: 1rpx solid rgba(142, 142, 147, 0.3);
+}
+
+.password-card[data-type="history"] {
+  background: rgba(0, 212, 170, 0.08);
+  border: 1rpx solid rgba(0, 212, 170, 0.3);
+}
+
+.password-card:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.15);
+}
+
+/* 卡片头部 */
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 24rpx;
+}
+
+.site-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+.site-icon {
+  width: 36rpx;
+  height: 36rpx;
+  margin-right: 12rpx;
+  opacity: 0.8;
+}
+
+.site-title {
+  flex: 1;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-actions {
+  flex-shrink: 0;
+}
+
+.favorite-btn {
+  width: 44rpx;
+  height: 44rpx;
+  padding: 8rpx;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+}
+
+.favorite-btn:active {
+  opacity: 0.9;
+}
+
+/* 卡片内容 */
+.card-content {
+  flex: 1;
+  margin-bottom: 24rpx;
+}
+
+.credential-field {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 16rpx;
+}
+
+.field-label {
+  font-size: 22rpx;
+  color: rgba(142, 142, 147, 0.8);
+  font-weight: 500;
+  width: 70rpx;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+  line-height: 1.3;
+}
+
+.field-value {
+  flex: 1;
+  font-size: 26rpx;
+  color: #1d1d1f;
+  font-weight: 500;
+  line-height: 1.3;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 特殊条目详细信息 */
+.special-info {
+  margin-top: 12rpx;
+  padding: 12rpx 16rpx;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 12rpx;
+  border: 1rpx solid rgba(0, 0, 0, 0.06);
+}
+
+.info-text {
+  font-size: 22rpx;
+  color: rgba(142, 142, 147, 0.9);
+  font-weight: 500;
+  line-height: 1.4;
+  word-break: break-all;
+}
+
+.tags-section {
+  margin-top: 16rpx;
+}
+
+.tags-scroll {
+  white-space: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tags-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.tag-item {
+  display: inline-block;
+  background: rgba(142, 142, 147, 0.15);
+  color: rgba(142, 142, 147, 0.9);
+  font-size: 22rpx;
+  font-weight: 500;
+  padding: 8rpx 16rpx;
+  border-radius: 14rpx;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+}
+
+/* 卡片底部 */
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 20rpx;
+  border-top: 1rpx solid rgba(0, 0, 0, 0.05);
+}
+
+.copy-button {
+  background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+  color: white;
+  font-size: 26rpx;
+  font-weight: 600;
+  padding: 14rpx 32rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 122, 255, 0.25);
+  transition: all 0.2s ease;
+  border: none;
+  outline: none;
+}
+
+.copy-button::after {
+  border: none;
+}
+
+.copy-button:active {
+  transform: translateY(1rpx);
+  box-shadow: 0 2rpx 8rpx rgba(0, 122, 255, 0.3);
+}
+
+.copy-text {
+  font-family: inherit;
+  line-height: 1;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 40rpx;
+  text-align: center;
+}
+
+.empty-visual {
+  margin-bottom: 32rpx;
+}
+
+.empty-icon {
+  width: 120rpx;
+  height: 120rpx;
+  opacity: 0.4;
+}
+
+.empty-content {
+  margin-bottom: 40rpx;
+}
+
+.empty-title {
+  font-size: 32rpx;
+  color: rgba(142, 142, 147, 0.9);
+  font-weight: 600;
+  margin-bottom: 12rpx;
+  line-height: 1.4;
+}
+
+.empty-subtitle {
+  font-size: 26rpx;
+  color: rgba(142, 142, 147, 0.7);
+  line-height: 1.5;
+}
+
+/* 【新增】批量选择相关样式 */
+
+/* 选择模式标题 */
+.selection-title {
+  flex-shrink: 0;
+  padding: 20rpx 32rpx;
+  background: #007aff;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 122, 255, 0.3);
+}
+
+.selection-count {
+  font-size: 28rpx;
+  color: white;
+  font-weight: 600;
+}
+
+/* 选择模式下的卡片样式 */
+.password-card.selection-mode {
+  position: relative;
+  border: 2rpx solid rgba(0, 122, 255, 0.2);
+  background: rgba(0, 122, 255, 0.02);
+}
+
+.password-card.selected {
+  border: 2rpx solid #007aff;
+  background: rgba(0, 122, 255, 0.08);
+  box-shadow: 0 4rpx 12rpx rgba(0, 122, 255, 0.15);
+}
+
+.password-card.selection-mode:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+/* 选择指示器 */
+.selection-indicator {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: #007aff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  box-shadow: 0 4rpx 12rpx rgba(0, 122, 255, 0.3);
+}
+
+.selection-check {
+  color: white;
+  font-size: 18rpx;
+  font-weight: bold;
+  line-height: 1;
+}
+
+/* 批量操作工具栏 */
+.batch-toolbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(25rpx);
+  -webkit-backdrop-filter: blur(25rpx);
+  border-top: 1rpx solid rgba(0, 0, 0, 0.15);
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  z-index: 1000;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.1);
+  padding-bottom: env(safe-area-inset-bottom, 0rpx);
+}
+
+.batch-toolbar.show {
+  transform: translateY(0);
+}
+
+.toolbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 32rpx;
+  min-height: 80rpx;
+  max-height: 80rpx;
+}
+
+.toolbar-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  flex-wrap: nowrap;
+  max-width: 100%;
+}
+
+.toolbar-btn {
+  padding: 12rpx 20rpx;
+  border-radius: 18rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  border: none;
+  outline: none;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 100rpx;
+  max-width: 200rpx;
+  height: 48rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.toolbar-btn::after {
+  border: none;
+}
+
+/* 全选按钮 - 增大尺寸优化居中 */
+.select-all-btn {
+  background: rgba(0, 122, 255, 0.1);
+  color: #007aff;
+  border: 1rpx solid rgba(0, 122, 255, 0.2);
+  height: 48rpx;
+  padding: 12rpx 20rpx;
+  min-width: 100rpx;
+}
+
+.select-all-btn:active {
+  background: rgba(0, 122, 255, 0.15);
+  transform: scale(0.98);
+}
+
+/* 取消按钮 */
+.cancel-btn {
+  background: rgba(142, 142, 147, 0.1);
+  color: #1d1d1f;
+  border: 1rpx solid rgba(142, 142, 147, 0.2);
+  min-width: 80rpx;
+}
+
+.cancel-btn:active {
+  background: rgba(142, 142, 147, 0.15);
+  transform: scale(0.98);
+}
+
+/* 删除按钮 */
+.delete-btn {
+  background: linear-gradient(135deg, #ff3b30 0%, #ff453a 100%);
+  color: white;
+  box-shadow: 0 4rpx 12rpx rgba(255, 59, 48, 0.25);
+  min-width: 120rpx;
+}
+
+.delete-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 8rpx rgba(255, 59, 48, 0.3);
+}
+
+.delete-btn:disabled {
+  background: rgba(142, 142, 147, 0.1);
+  color: rgba(142, 142, 147, 0.6);
+  box-shadow: none;
+  border: 1rpx solid rgba(142, 142, 147, 0.2);
+}
+
+/* 选择模式下隐藏一些元素 */
+.selection-mode .card-actions,
+.selection-mode .card-footer {
+  display: none;
+}
+
+/* 调整内容区域底部间距 */
+.content-section {
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom, 0rpx));
+}
+
+/* 选择模式下的网格样式 */
+.password-grid {
+  margin-bottom: 20rpx;
+}
+
+/* 修复蓝色边框问题 - 兼容微信小程序 */
+
+/* 移除按钮默认样式 */
+.toolbar-btn {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.copy-button {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.favorite-btn {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.selection-checkbox {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 确保密码卡片正常边框 */
+.password-card {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.password-card.selection-mode {
+  border: 2rpx solid rgba(0, 122, 255, 0.2);
+}
+
+.password-card.selected {
+  border: 2rpx solid #007aff;
+}
+
+/* 响应式适配 */
+@media (max-width: 750rpx) {
+  .password-grid {
+    grid-template-columns: 1fr;
+    gap: 16rpx;
+  }
+
+  .toolbar-content {
+    padding: 16rpx 24rpx;
+  }
+
+  .toolbar-btn {
+    padding: 12rpx 20rpx;
+    font-size: 26rpx;
+    min-width: 100rpx;
+  }
+
+  .delete-btn {
+    min-width: 140rpx;
+  }
+}
+
+/* 【新增】卡片尺寸切换功能样式 */
+
+/* 徽章式尺寸指示器 */
+.add-button-wrapper {
+  position: relative;
+}
+
+.size-badge {
+  position: absolute;
+  top: -6rpx;
+  right: -6rpx;
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2rpx solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+  z-index: 20;
+  pointer-events: none;
+  backdrop-filter: blur(8rpx);
+  -webkit-backdrop-filter: blur(8rpx);
+}
+
+/* 正常模式 - 蓝色圆点 */
+.size-badge.normal::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+  box-shadow: 0 1rpx 4rpx rgba(0, 122, 255, 0.3);
+}
+
+/* 紧凑模式 - 橙色圆点 */
+.size-badge.compact::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  box-shadow: 0 1rpx 4rpx rgba(245, 158, 11, 0.3);
+}
+
+/* 正常模式卡片样式 */
+.password-card.normal-mode {
+  padding: 24rpx;
+}
+
+.password-card.normal-mode .card-header {
+  margin-bottom: 24rpx;
+}
+
+.password-card.normal-mode .card-content {
+  margin-bottom: 24rpx;
+}
+
+.password-card.normal-mode .credential-field {
+  margin-bottom: 16rpx;
+}
+
+.password-card.normal-mode .card-footer {
+  padding-top: 20rpx;
+}
+
+/* 紧凑模式卡片样式 */
+.password-card.compact-mode {
+  padding: 16rpx;
+}
+
+.password-card.compact-mode .card-header {
+  margin-bottom: 12rpx;
+}
+
+.password-card.compact-mode .card-content {
+  margin-bottom: 12rpx;
+}
+
+.password-card.compact-mode .credential-field {
+  margin-bottom: 8rpx;
+}
+
+.password-card.compact-mode .card-footer {
+  padding-top: 12rpx;
+}
+
+.password-card.compact-mode .site-title {
+  font-size: 24rpx;
+}
+
+.password-card.compact-mode .field-label {
+  font-size: 20rpx;
+  width: 60rpx;
+}
+
+.password-card.compact-mode .field-value {
+  font-size: 24rpx;
+}
+
+.password-card.compact-mode .info-text {
+  font-size: 20rpx;
+}
+
+.password-card.compact-mode .copy-button {
+  padding: 10rpx 24rpx;
+  font-size: 24rpx;
+}
+
+
+
+/* 响应式适配 - 卡片尺寸切换 */
+@media (max-width: 750rpx) {
+  .password-card.compact-mode {
+    padding: 12rpx;
+  }
+
+  .password-card.compact-mode .site-title {
+    font-size: 22rpx;
+  }
+
+  .password-card.compact-mode .field-value {
+    font-size: 22rpx;
+  }
+}

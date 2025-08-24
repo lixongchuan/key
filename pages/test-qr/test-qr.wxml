@@ -1,0 +1,4 @@
+<view style="padding:32rpx;color:#8a8a8e">
+  占位页：请在微信开发者工具“编译配置/启动页”选择一个存在的页面（如 pages/index/index 或 pages/unlock/unlock），
+  然后删除 pages/test-qr 目录以彻底清理。
+</view>

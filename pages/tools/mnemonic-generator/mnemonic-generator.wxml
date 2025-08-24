@@ -1,0 +1,120 @@
+<!-- 现代化助记密码生成器 -->
+<view class="modern-mnemonic-page">
+  <!-- 页面标题 -->
+  <view class="mnemonic-header">
+    <text class="mnemonic-title">助记密码</text>
+  </view>
+
+  <!-- 主要内容区域 -->
+  <view class="modern-mnemonic-container">
+    <!-- 输入区域 -->
+    <view class="input-section">
+      <view class="input-group">
+        <label class="input-label">
+          <image class="input-icon" src="/images/icon-key.png"></image>
+          <text>主口令</text>
+        </label>
+        <text class="input-hint">请设置一个您容易记住但别人难以猜到的口令</text>
+        <input
+          class="modern-input password"
+          type="{{showMasterKey ? 'text' : 'password'}}"
+          placeholder="如: MySecretPhrase!2024"
+          bindinput="onInput"
+          data-field="masterKey"
+          value="{{masterKey}}"
+        />
+        <button
+          class="visibility-toggle"
+          bindtap="toggleMasterKeyVisibility"
+        >
+          <image
+            class="visibility-icon"
+            src="{{showMasterKey ? '/images/icon-eye-open.png' : '/images/icon-eye-close.png'}}"
+          ></image>
+        </button>
+      </view>
+
+      <view class="input-group">
+        <label class="input-label">
+          <image class="input-icon" src="/images/icon-url.png"></image>
+          <text>服务标识</text>
+        </label>
+        <text class="input-hint">如: google.com、github.com、app.example.com</text>
+        <input
+          class="modern-input"
+          type="text"
+          placeholder="区分大小写"
+          bindinput="onInput"
+          data-field="serviceId"
+          value="{{serviceId}}"
+        />
+      </view>
+    </view>
+
+    <!-- 生成按钮区域 -->
+    <view class="generate-section">
+      <button
+        class="generate-main-btn {{!masterKey || !serviceId ? 'disabled' : ''}}"
+        bindtap="generate"
+        disabled="{{!masterKey || !serviceId}}"
+      >
+        <image class="btn-icon" src="/images/icon-generate.png"></image>
+        <text>生成密码</text>
+      </button>
+
+      <!-- 快捷操作按钮 -->
+      <view class="quick-actions">
+        <button class="quick-btn" bindtap="clearInputs">
+          <image class="btn-icon" src="/images/icon-trash.png"></image>
+          <text>清空</text>
+        </button>
+        <button class="quick-btn" bindtap="pasteServiceId">
+          <image class="btn-icon" src="/images/icon-copy.png"></image>
+          <text>粘贴</text>
+        </button>
+        <button class="quick-btn" bindtap="viewSavedConfigs">
+          <image class="btn-icon" src="/images/icon-notes.png"></image>
+          <text>配置</text>
+        </button>
+      </view>
+    </view>
+
+    <!-- 结果显示区域 -->
+    <view wx:if="{{resultPassword}}" class="result-section">
+      <view class="result-header">
+        <text class="result-title">
+          <image class="result-icon" src="/images/icon-shield-check.png"></image>
+          <text>生成结果</text>
+        </text>
+        <text class="result-info">{{resultPassword.length}} 位</text>
+      </view>
+
+      <view class="result-display" bindtap="copyResult">
+        {{resultPassword}}
+      </view>
+
+      <!-- 功能按钮 -->
+      <view class="action-buttons">
+        <button class="action-btn" bindtap="copyResult">
+          <image class="btn-icon" src="/images/icon-copy.png"></image>
+          <text>复制</text>
+        </button>
+        <button class="action-btn" bindtap="saveResult">
+          <image class="btn-icon" src="/images/icon-save.png"></image>
+          <text>保存</text>
+        </button>
+      </view>
+    </view>
+
+    <!-- 安全提示 -->
+    <view class="security-tips">
+      <text class="tips-title">
+        <image class="tips-icon" src="/images/icon-info.png"></image>
+        <text>安全提示</text>
+      </text>
+      <text class="tips-content">
+        相同的主口令和服务标识将始终生成相同的密码。请妥善保管主口令，不要使用过于简单的口令。
+      </text>
+    </view>
+  </view>
+</view>

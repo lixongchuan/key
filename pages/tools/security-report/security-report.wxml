@@ -1,0 +1,179 @@
+<!-- 现代化安全报告页面 -->
+<view class="security-report-page">
+  <!-- 移除了页面标题区域 -->
+
+  <!-- 主要内容区域 -->
+  <view class="security-report-container">
+    <!-- 安全分数卡片 -->
+    <view class="security-score-card">
+      <view class="score-display">
+        <text class="score-label">安全评分</text>
+        <view style="display: flex; align-items: baseline; justify-content: center;">
+          <text class="score-number">{{score}}</text>
+          <text class="score-unit">分</text>
+        </view>
+      </view>
+      <text class="summary-text">{{summaryText}}</text>
+    </view>
+
+    <!-- 安全统计卡片 -->
+    <view class="stats-card">
+      <view class="stats-grid">
+        <view class="stat-item">
+          <text class="stat-number">{{totalPasswords}}</text>
+          <text class="stat-label">总密码数</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-number">{{weakPasswords}}</text>
+          <text class="stat-label">弱密码</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-number">{{reusedPasswords}}</text>
+          <text class="stat-label">重复使用</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-number">{{oldPasswords}}</text>
+          <text class="stat-label">过期密码</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 问题列表 -->
+    <view class="issues-card">
+      <text class="issues-title">
+        <image class="issues-icon" src="/images/icon-alert.png"></image>
+        <text>安全问题</text>
+      </text>
+
+      <!-- 弱密码 -->
+      <view class="issue-item" wx:if="{{issues.weak.length > 0}}" bindtap="goToWeakList">
+        <view class="issue-left">
+          <view class="issue-icon weak">
+            <image class="issue-img" src="/images/icon-alert.png"></image>
+          </view>
+          <view class="issue-text">
+            <text class="issue-name">弱密码</text>
+            <text class="issue-desc">容易被破解，请立即修改</text>
+          </view>
+        </view>
+        <view class="issue-right">
+          <text class="issue-count">{{issues.weak.length}}</text>
+          <image class="issue-arrow" src="/images/arrow-right.png"></image>
+        </view>
+      </view>
+
+      <!-- 重用密码 -->
+      <view class="issue-item" wx:if="{{issues.reused.length > 0}}" bindtap="goToReusedList">
+        <view class="issue-left">
+          <view class="issue-icon reused">
+            <image class="issue-img" src="/images/icon-copy-alert.png"></image>
+          </view>
+          <view class="issue-text">
+            <text class="issue-name">密码重用</text>
+            <text class="issue-desc">多个账户使用相同密码</text>
+          </view>
+        </view>
+        <view class="issue-right">
+          <text class="issue-count">{{issues.reused.length}}</text>
+          <image class="issue-arrow" src="/images/arrow-right.png"></image>
+        </view>
+      </view>
+
+      <!-- 旧密码 -->
+      <view class="issue-item" wx:if="{{issues.old.length > 0}}" bindtap="goToOldList">
+        <view class="issue-left">
+          <view class="issue-icon old">
+            <image class="issue-img" src="/images/icon-time-alert.png"></image>
+          </view>
+          <view class="issue-text">
+            <text class="issue-name">过期密码</text>
+            <text class="issue-desc">长时间未修改，建议更新</text>
+          </view>
+        </view>
+        <view class="issue-right">
+          <text class="issue-count">{{issues.old.length}}</text>
+          <image class="issue-arrow" src="/images/arrow-right.png"></image>
+        </view>
+      </view>
+    </view>
+
+    <!-- 安全建议卡片 -->
+    <view class="suggestions-card">
+      <text class="suggestions-title">安全建议</text>
+
+      <view class="suggestion-item">
+        <image class="suggestion-icon" src="/images/icon-key.png"></image>
+        <view class="suggestion-content">
+          <text class="suggestion-title">使用强密码</text>
+          <text class="suggestion-desc">建议使用包含大小写字母、数字和符号的强密码</text>
+        </view>
+      </view>
+
+      <view class="suggestion-item">
+        <image class="suggestion-icon" src="/images/icon-shield-check.png"></image>
+        <view class="suggestion-content">
+          <text class="suggestion-title">避免密码重用</text>
+          <text class="suggestion-desc">每个账户使用不同的密码，降低安全风险</text>
+        </view>
+      </view>
+
+      <view class="suggestion-item">
+        <image class="suggestion-icon" src="/images/icon-time-alert.png"></image>
+        <view class="suggestion-content">
+          <text class="suggestion-title">定期更新密码</text>
+          <text class="suggestion-desc">建议每3-6个月更新一次重要账户的密码</text>
+        </view>
+      </view>
+    </view>
+
+  <!-- 统一“弱/重用”列表为首页卡片风格 -->
+  <view class="list-section" wx:if="{{showWeakList}}">
+    <view class="section-title">弱密码</view>
+    <view class="vault-grid">
+      <block wx:for="{{issues.weak}}" wx:key="id">
+        <view class="vault-card" bindtap="onTapWeakItem" data-id="{{item.id}}">
+          <view class="card-header">
+            <image class="favicon" src="/images/icon-password.png"></image>
+            <text class="title">{{item.title || '未命名'}}</text>
+          </view>
+          <view class="card-body">
+            <text class="username">{{item.username}}</text>
+            <text class="url">{{item.url}}</text>
+          </view>
+        </view>
+      </block>
+      <!-- 奇数/单项占位，保持两列对齐 -->
+      <view class="vault-card placeholder" wx:if="{{issues.weak.length % 2 === 1}}"></view>
+    </view>
+  </view>
+
+  <view class="list-section" wx:if="{{showReusedList}}">
+    <view class="section-title">密码重用</view>
+    <view class="vault-grid">
+      <block wx:for="{{issues.reused}}" wx:key="id">
+        <view class="vault-card" bindtap="onTapReusedItem" data-id="{{item.id}}">
+          <view class="card-header">
+            <image class="favicon" src="/images/icon-copy-alert.png"></image>
+            <text class="title">{{item.title || '未命名'}}</text>
+          </view>
+          <view class="card-body">
+            <text class="username">{{item.username}}</text>
+            <text class="url">{{item.url}}</text>
+          </view>
+        </view>
+      </block>
+      <view class="vault-card placeholder" wx:if="{{issues.reused.length % 2 === 1}}"></view>
+    </view>
+  </view>
+
+
+
+    <!-- 功能按钮区域 -->
+    <view class="action-buttons">
+      <button class="action-btn primary full-width" bindtap="analyzeVault">
+        <image class="btn-icon" src="/images/icon-generate.png"></image>
+        <text>重新分析</text>
+      </button>
+    </view>
+  </view>
+</view>

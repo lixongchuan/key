@@ -1,0 +1,75 @@
+<!--
+  文件: pages/setup/setup.wxml
+  这是最终的、保证有效的WXML。
+-->
+<view class="container">
+  <view class="hero">
+    <view class="title">设置您的主密码</view>
+
+    <!-- 中间插画 + 一句话（方案1） -->
+    <view class="illustration">
+      <image class="illu-img" src="/images/illus-setup.jpg" mode="widthFix"></image>
+      <text class="illu-text">本地加密·仅你可见</text>
+    </view>
+
+    <!-- 轻步骤（方案2） -->
+    <view class="stepper">
+      <view class="step active">1/2 设置主密码</view>
+    </view>
+  </view>
+
+  <form bindsubmit="handleSetup" class="form">
+    <!-- 主密码 -->
+    <view class="input-wrapper">
+      <input
+        id="masterPasswordInput"
+        name="masterPassword"
+        type="{{showPassword ? 'text' : 'password'}}"
+        class="input-field"
+        placeholder="至少 8 位，包含多种字符更安全"
+        placeholder-class="placeholder"
+        bindinput="onPasswordInput"
+        value="{{masterPassword}}"
+        key="{{passwordInputKey}}"
+      />
+      <image
+        class="eye-icon"
+        src="{{showPassword ? '/images/eye-open.png' : '/images/eye-close.png'}}"
+        bindtap="toggleShowPassword"
+      ></image>
+    </view>
+
+    <!-- 简洁提示：只给“建议更安全”的轻提示，减少信息噪音 -->
+    <view class="strength-brief" wx:if="{{masterPassword}}">
+      <image class="brief-icon" src="/images/icon-{{strengthLevel === 'strong' ? 'shield-check' : 'info'}}.png"></image>
+      <text class="brief-text">
+        {{strengthLevel === 'strong' ? '密码很强' : (strengthLevel === 'medium' ? '还不错，加入更多字符更安全' : '建议包含数字/字母/符号以提升强度')}}
+      </text>
+    </view>
+
+    <!-- 确认密码 -->
+    <view class="input-wrapper">
+      <input
+        id="confirmPasswordInput"
+        name="confirmPassword"
+        type="{{showConfirmPassword ? 'text' : 'password'}}"
+        class="input-field"
+        placeholder="请再次确认主密码"
+        placeholder-class="placeholder"
+        bindinput="onConfirmInput"
+        value="{{confirmPassword}}"
+        key="{{confirmPasswordInputKey}}"
+      />
+      <image
+        class="eye-icon"
+        src="{{showConfirmPassword ? '/images/eye-open.png' : '/images/eye-close.png'}}"
+        bindtap="toggleShowConfirm"
+      ></image>
+    </view>
+
+    <!-- 现代按钮（随可用态变化） -->
+    <button class="setup-button {{canSubmit ? 'enabled' : 'disabled'}}" form-type="submit" disabled="{{!canSubmit}}">
+      创建密码库
+    </button>
+  </form>
+</view>

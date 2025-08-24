@@ -1,0 +1,234 @@
+/* 文件路径: pages/unlock/unlock.wxss */
+
+/* 现代白色/灰色渐变背景 - 潮流大牌时尚设计 */
+page {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 25%, #e9ecef 50%, #f1f3f4 75%, #ffffff 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  min-height: 100vh;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.container {
+  min-height: 100vh;
+  padding: 60rpx 48rpx 48rpx;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* 毛玻璃效果背景层 */
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  border-radius: 0 0 32rpx 32rpx;
+  z-index: -1;
+}
+
+/* 顶部插画与步骤（与设置页风格一致） */
+.hero {
+  text-align: center;
+  margin-top: 5vh;
+  margin-bottom: 24rpx;
+}
+
+/* 欢迎标题：置于顶部，浅色背景下更自然 */
+.welcome-title {
+  font-size: 44rpx;
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -0.5rpx;
+  text-shadow: none;
+  margin-bottom: 28rpx; /* 与插画之间空隙 */
+}
+
+.illustration {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 36rpx; /* 插画与步骤之间空2~3行（统一设置页间距感） */
+}
+.illu-img {
+  width: 94%;            /* 再稍微放大 */
+  max-width: 680rpx;     /* 更大尺寸 */
+  max-height: 420rpx;    /* 提高高度上限 */
+  height: auto;
+  opacity: 0.98;
+  border-radius: 18rpx;
+  box-shadow: 0 18rpx 40rpx rgba(0,0,0,.35);
+}
+.illu-text {
+  margin-top: 8rpx;
+  font-size: 26rpx;
+  color: #8e8e93; /* 浅色背景提示文案色 */
+}
+
+.stepper.stepper-large {
+  margin-bottom: 32rpx; /* 步骤与下方表单之间也保留呼吸感 */
+}
+.stepper.stepper-large .step {
+  font-size: 40rpx;   /* 与设置页一致的大字号蓝色步骤 */
+  color: #0a84ff;
+  font-weight: 800;
+  letter-spacing: -0.5rpx;
+  text-shadow: none;
+}
+
+/* 顶部品牌与欢迎语（保持原有结构） */
+/* 移除旧的 LOGO 与欢迎语样式（不再展示），若保留其他地方引用可留作通用样式 */
+.logo {
+  display: none;
+}
+.greeting {
+  display: none;
+}
+
+/* 表单与输入 - 增强立体感 */
+.input-wrapper {
+  width: 100%;
+  position: relative;
+  margin-bottom: 20rpx;
+}
+.input-field {
+  width: 100%;
+  height: 100rpx;
+  padding: 0 32rpx;
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  color: #111;
+  border-radius: 18rpx;
+  font-size: 34rpx;
+  box-sizing: border-box;
+  border: 1rpx solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 8rpx 32rpx rgba(0, 0, 0, 0.12),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+}
+.input-field:focus {
+  transform: translateY(-2rpx);
+  box-shadow:
+    0 12rpx 40rpx rgba(0, 0, 0, 0.15),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.9);
+}
+.placeholder {
+  color: #a0a0a0;
+  opacity: 0.7;
+}
+
+/* 按钮 - 现代科技感 */
+.unlock-button {
+  width: 100%;
+  height: 108rpx;
+  line-height: 108rpx;
+  background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+  color: #fff;
+  font-size: 36rpx;
+  font-weight: 600;
+  border-radius: 22rpx;
+  margin-top: 12rpx;
+  border: none;
+  box-shadow:
+    0 8rpx 25rpx rgba(7, 193, 96, 0.3),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.unlock-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+.unlock-button:hover {
+  transform: translateY(-3rpx);
+  box-shadow:
+    0 12rpx 35rpx rgba(7, 193, 96, 0.4),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.3);
+}
+.unlock-button:active::before {
+  left: 100%;
+}
+.unlock-button::after { border: none; }
+
+/* 分割线 与 生物识别按钮 */
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 28rpx 0 18rpx;
+}
+.divider .line {
+  flex: 1;
+  height: 2rpx;
+  background: #e6e6eb;
+}
+.divider .divider-text {
+  font-size: 26rpx;
+  color: #8e8e93;
+  margin: 0 18rpx;
+}
+
+.bio-button {
+  width: 100%;
+  height: 98rpx;
+  line-height: 98rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  color: #0a84ff;
+  font-size: 34rpx;
+  font-weight: 500;
+  border-radius: 18rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 6rpx 20rpx rgba(0, 0, 0, 0.08),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.bio-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(10, 132, 255, 0.05), rgba(10, 132, 255, 0.02));
+  border-radius: 18rpx;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.bio-button:hover {
+  transform: translateY(-2rpx);
+  box-shadow:
+    0 10rpx 30rpx rgba(0, 0, 0, 0.12),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.8);
+}
+.bio-button:hover::before {
+  opacity: 1;
+}
+.bio-button::after { border: none; }
+.bio-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 12rpx;
+  filter: none;
+}

@@ -1,0 +1,36 @@
+<view class="container">
+  <block wx:if="{{issueList.length > 0}}">
+    <!-- 复用首页的双列网格布局 -->
+    <view class="vault-grid">
+      <view class="vault-card" 
+            wx:for="{{issueList}}" 
+            wx:key="id" 
+            data-id="{{item.id}}" 
+            bindtap="goToEdit">
+        
+        <view class="card-header">
+          <image class="card-icon" src="/images/icon-world.png"></image> 
+          <text class="card-title">{{item.title}}</text>
+          <!-- 在这里可以根据问题类型显示不同的状态图标，暂时留空 -->
+        </view>
+        
+        <view class="card-body">
+          <view class="card-field">
+            <text class="field-label">用户</text>
+            <text class="field-value">{{item.username}}</text>
+          </view>
+        </view>
+        
+        <view class="card-footer">
+          <button class="copy-btn-placeholder">编辑</button>
+        </view>
+      </view>
+    </view>
+  </block>
+  <block wx:else>
+    <view class="empty-state">
+      <image class="empty-icon" src="/images/icon-shield-check.png"></image>
+      <view class="empty-text">没有发现相关问题</view>
+    </view>
+  </block>
+</view>

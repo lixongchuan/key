@@ -1,0 +1,86 @@
+/* 文件路径: pages/trash/trash.wxss */
+page {
+  background-color: #f7f8fa;
+}
+.container {
+  padding: 30rpx;
+}
+.page-title {
+  font-size: 40rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+}
+.page-desc {
+  font-size: 26rpx;
+  color: #999;
+  margin-bottom: 40rpx;
+}
+
+/* 列表样式 */
+.trash-list {
+  width: 100%;
+}
+.trash-item {
+  background-color: #ffffff;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+.item-info .item-title {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+}
+.item-info .item-username {
+  font-size: 26rpx;
+  color: #888;
+  margin: 10rpx 0;
+}
+.item-info .item-delete-time {
+  font-size: 24rpx;
+  color: #aaa;
+}
+.item-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1px solid #f2f2f2;
+}
+.action-btn {
+  font-size: 26rpx;
+  padding: 10rpx 24rpx;
+  border-radius: 30rpx;
+  margin: 0 0 0 20rpx;
+  line-height: 1.5;
+}
+.action-btn::after {
+  border: none;
+}
+.restore-btn {
+  background-color: #e8f5e9;
+  color: #07c160;
+}
+.delete-btn {
+  background-color: #fceeee;
+  color: #e64340;
+}
+
+/* 空状态样式 (与 index 页类似) */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 200rpx;
+}
+.empty-icon {
+  width: 128rpx;
+  height: 128rpx;
+  margin-bottom: 30rpx;
+}
+.empty-text {
+  font-size: 30rpx;
+  color: #aaa;
+}

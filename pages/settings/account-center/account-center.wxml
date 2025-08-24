@@ -1,0 +1,144 @@
+<!-- 账户中心 - 极简白色风格 -->
+<view class="account-page">
+  <!-- 顶部导航栏 -->
+  <view class="top-nav">
+    <view class="nav-left">
+      <text class="nav-title">账户中心</text>
+    </view>
+    <view class="nav-right">
+      <view class="nav-btn" bindtap="goToPasswordGenerator">
+        <image class="nav-icon" src="/images/icon-generate.png"></image>
+      </view>
+      <view class="nav-btn" bindtap="scanQRCode">
+        <image class="nav-icon" src="/images/QR_code.png"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 用户信息区域 -->
+  <view class="user-section">
+    <!-- 左侧头像 -->
+    <view class="avatar-wrapper" bindtap="chooseAvatar">
+      <image class="user-avatar" src="{{userProfile.avatarUrl}}" mode="aspectFill"></image>
+      <view class="edit-overlay">
+        <image class="edit-icon" src="/images/icon-plus.png"></image>
+      </view>
+    </view>
+
+    <!-- 右侧信息 -->
+    <view class="user-info">
+    <view class="name-section">
+      <!-- 显示模式 -->
+      <view class="name-display" wx:if="{{!isEditingNickname}}">
+        <text class="user-name">{{userProfile.nickName}}</text>
+        <button class="edit-btn" bindtap="toggleEditNickname">
+          <image class="edit-icon" src="/images/icon-edit.png"></image>
+          编辑
+        </button>
+      </view>
+
+      <!-- 编辑模式 -->
+      <view class="name-editor" wx:else>
+        <view class="editor-container">
+          <view class="input-wrapper">
+            <input
+              class="nickname-input"
+              value="{{editingNickname}}"
+              placeholder="请输入昵称"
+              bindinput="onNicknameInput"
+              bindconfirm="saveNickname"
+              confirm-type="done"
+              focus="{{isEditingNickname}}"
+              maxlength="7"
+              placeholder-style="color: #a0a0a0;"
+              cursor="{{editingNickname.length}}"
+            />
+            <view class="input-underline"></view>
+          </view>
+
+          <view class="character-count">
+            <text class="count-text {{editingNickname.length > 5 ? 'warning' : ''}}">{{7-editingNickname.length}}</text>
+          </view>
+
+          <view class="editor-buttons">
+            <button class="action-btn cancel" bindtap="cancelEditNickname">
+              取消
+            </button>
+            <button class="action-btn save" bindtap="saveNickname">
+              保存
+            </button>
+          </view>
+        </view>
+      </view>
+    </view>
+
+      <!-- 安全徽章 -->
+      <view class="security-badge">
+        <text class="badge-text">安全认证</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分割线 -->
+  <view class="divider"></view>
+
+  <!-- 功能网格 -->
+  <view class="feature-grid">
+    <view class="grid-item" bindtap="goToPasswordGenerator">
+      <view class="item-icon-wrapper">
+        <image class="grid-icon" src="/images/icon-generate2.png"></image>
+      </view>
+      <text class="grid-text">密码生成器</text>
+    </view>
+
+    <view class="grid-item" bindtap="goToSecurityReport">
+      <view class="item-icon-wrapper">
+        <image class="grid-icon" src="/images/icon-shield-check.png"></image>
+      </view>
+      <text class="grid-text">安全检查</text>
+    </view>
+
+    <view class="grid-item" bindtap="showComingSoon" data-feature="分类管理">
+      <view class="item-icon-wrapper">
+        <image class="grid-icon" src="/images/icon-tags.png"></image>
+      </view>
+      <text class="grid-text">分类管理</text>
+    </view>
+
+
+
+    <view class="grid-item" bindtap="goToAuditLog">
+      <view class="item-icon-wrapper">
+        <image class="grid-icon" src="/images/icon-notes.png"></image>
+      </view>
+      <text class="grid-text">操作日志</text>
+    </view>
+
+
+  </view>
+
+  <!-- 头像选择弹窗 -->
+  <view class="avatar-modal {{showAvatarModal ? 'show' : ''}}" wx:if="{{showAvatarModal}}" bindtap="hideAvatarModal">
+    <view class="modal-content" bindtap="">
+      <view class="modal-header">
+        <text class="modal-title">选择预置头像</text>
+        <view class="close-btn" bindtap="hideAvatarModal">
+          <image class="close-icon" src="/images/close.png"></image>
+        </view>
+      </view>
+
+      <view class="avatar-grid">
+        <view class="avatar-item" wx:for="{{avatarOptions}}" wx:key="id" bindtap="selectAvatar" data-path="{{item.path}}" data-name="{{item.name}}">
+          <image class="avatar-preview" src="{{item.path}}" mode="aspectFill"></image>
+          <text class="avatar-name">{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部提示 -->
+  <view class="bottom-info">
+    <image class="info-icon" src="/images/icon-shield-check.png"></image>
+    <text class="info-text">您的所有数据都经过端到端加密，仅在本地解密</text>
+  </view>
+</view>

@@ -1,0 +1,33 @@
+<!-- 文件路径: pages/tools/index.wxml -->
+<view class="container">
+  <view class="page-title">工具箱</view>
+
+  <view class="tool-list">
+    <view class="tool-item" bindtap="navigateTo" data-url="/pages/tools/generator/generator">
+      <image class="tool-icon" src="/images/icon-generate2.png"></image>
+      <view class="tool-info">
+        <view class="tool-name">随机密码生成器</view>
+        <view class="tool-desc">创建高强度、无规律的随机密码</view>
+      </view>
+      <image class="arrow-right" src="/images/arrow-right.png"></image>
+    </view>
+
+    <view class="tool-item" bindtap="navigateTo" data-url="/pages/tools/mnemonic-generator/mnemonic-generator">
+      <image class="tool-icon" src="/images/icon-brain.png"></image> <!-- 新图标 -->
+      <view class="tool-info">
+        <view class="tool-name">助记密码生成器</view>
+        <view class="tool-desc">用一个口令为不同网站生成唯一密码</view>
+      </view>
+      <image class="arrow-right" src="/images/arrow-right.png"></image>
+    </view>
+
+    <view class="tool-item" bindtap="navigateTo" data-url="/pages/tools/security-report/security-report">
+      <image class="tool-icon" src="/images/icon-shield-check.png"></image> <!-- 新图标 -->
+      <view class="tool-info">
+        <view class="tool-name">安全报告</view>
+        <view class="tool-desc">检查您的密码库健康状况</view>
+      </view>
+      <image class="arrow-right" src="/images/arrow-right.png"></image>
+    </view>
+  </view>
+</view>

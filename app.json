@@ -1,0 +1,59 @@
+{
+  "pages": [
+    "pages/launch/launch",
+    "pages/setup/setup",
+    "pages/unlock/unlock",
+    "pages/index/index",
+    "pages/edit/edit",
+
+    "pages/tools/index",
+    "pages/tools/generator/generator",
+    "pages/tools/mnemonic-generator/mnemonic-generator",
+    "pages/tools/security-report/security-report",
+    "pages/tools/issue-list/issue-list",
+    "pages/tools/qrcode-display/qrcode-display",
+
+    "pages/settings/settings",
+    "pages/settings/account-center/account-center",
+    "pages/settings/audit-log/audit-log",
+    "pages/settings/data-management",
+    "pages/settings/about/about",
+    "pages/settings/change-master/change-master",
+    "pages/trash/trash"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "Weixin",
+    "navigationBarBackgroundColor": "#FFFFFF"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#07c160",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "密码库",
+        "iconPath": "images/tab-vault-inactive.png",
+        "selectedIconPath": "images/tab-vault-active.png"
+      },
+      {
+        "pagePath": "pages/tools/index",
+        "text": "工具",
+        "iconPath": "images/tab-tools-inactive.png",
+        "selectedIconPath": "images/tab-tools-active.png"
+      },
+      {
+        "pagePath": "pages/settings/settings",
+        "text": "设置",
+        "iconPath": "images/tab-settings-inactive.png",
+        "selectedIconPath": "images/tab-settings-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

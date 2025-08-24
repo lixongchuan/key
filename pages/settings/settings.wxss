@@ -1,0 +1,28 @@
+/* 文件路径: pages/settings/settings.wxss (重构版) */
+page { background-color: #f7f8fa; }
+.page-container { padding: 30rpx; }
+.page-title { font-size: 48rpx; font-weight: bold; margin-bottom: 40rpx; padding: 0 10rpx;}
+
+.setting-group {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  margin-bottom: 30rpx;
+  padding: 0 30rpx;
+}
+.group-title {
+  font-size: 24rpx;
+  color: #999;
+  padding: 30rpx 0 10rpx;
+}
+.setting-item {
+  display: flex;
+  align-items: center;
+  padding: 35rpx 0;
+  border-bottom: 1px solid #f2f2f2;
+}
+.setting-item:last-child { border-bottom: none; }
+.item-icon { width: 44rpx; height: 44rpx; margin-right: 25rpx; }
+.item-label-group { flex: 1; }
+.item-label { flex: 1; font-size: 30rpx; color: #333; }
+.item-desc { font-size: 24rpx; color: #999; }
+.arrow-right { width: 32rpx; height: 32rpx; }

@@ -1,0 +1,66 @@
+<!-- 关于我们 - 现代化苹果风格 -->
+<view class="page">
+  <view class="container">
+    <view class="hero">
+    <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+    <view class="title">关于我们｜密盾</view>
+    <view class="subtitle">更安全、更便捷的本地加密与生物识别解锁</view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">应用信息</view>
+    <view class="text">当前版本：<text class="bold">{{version}}</text></view>
+    <view class="text">构建日期：{{buildTime}}</view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">开发者</view>
+    <view class="text">本小程序由 <text class="bold">lxc</text> 开发与维护。</view>
+    <view class="row">
+      <text class="label">联系邮箱</text>
+      <text class="mono">lixongchuan@outlook.com</text>
+      <button class="link" size="mini" bindtap="copyEmail">复制</button>
+    </view>
+  </view>
+
+  <!-- 暂时隐藏开源信息部分  -->
+  <!--
+  <view class="card">
+    <view class="card-title">开源信息</view>
+    <view class="text">
+      项目源代码已在 GitHub 开源，欢迎 Star、Issue 与 PR 一同完善体验与安全性。
+    </view>
+    <view class="row">
+      <text class="label">仓库地址</text>
+      <text class="mono">{{repoUrl || '待补充'}}</text>
+      <button class="link" size="mini" bindtap="copyRepo">复制</button>
+    </view>
+  </view>
+  -->
+
+  <!-- 暂时隐藏相关产品部分  -->
+  <!--
+  <view class="card">
+    <view class="card-title">相关产品 · Markdown 转 Docx</view>
+    <view class="text">
+      一款 Markdown 转 Docx 的在线工具，适合将 AI 生成的内容一键导出为排版良好的文档，便于报告、周报与归档。
+    </view>
+    <view class="bullets">
+      <view class="bullet">• 支持标题、列表、表格、代码块等常见 Markdown 语法</view>
+      <view class="bullet">• 内置模板，生成 Docx 更接近出版风格</view>
+      <view class="bullet">• 适合办公写作与知识沉淀，减少手工整理</view>
+    </view>
+    <view class="row">
+      <text class="label">访问地址</text>
+      <text class="mono">暂时无</text>
+      <button class="link" size="mini" bindtap="copyProductUrl">复制</button>
+    </view>
+  </view>
+  -->
+
+    <view class="tips">
+      <image class="icon" src="/images/icon-shield-check.png"></image>
+      <text>隐私承诺：本小程序采用本地解密与端到端加密，生物识别仅用于本地便捷解锁。</text>
+    </view>
+  </view>
+</view>

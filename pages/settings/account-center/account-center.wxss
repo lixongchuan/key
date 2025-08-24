@@ -1,0 +1,637 @@
+/* 账户中心 - 修复文字显示问题 */
+.account-page {
+  background: #ffffff;
+  min-height: 100vh;
+  padding: 0;
+  position: relative;
+  /* 禁用页面滚动，防止输入框遮挡 */
+  overflow: hidden;
+  /* 确保页面内容不会超出屏幕 */
+  box-sizing: border-box;
+  /* 确保文字清晰显示 */
+  color: #1a202c;
+}
+
+/* 页面主容器样式重置 */
+/* 移除了通配符选择器，避免微信小程序编译错误 */
+
+/* 顶部导航栏 */
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #ffffff;
+  padding: 20rpx 24rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1rpx solid #e2e8f0;
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+}
+
+.nav-left {
+  flex: 1;
+}
+
+.nav-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.nav-btn {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16rpx;
+  transition: all 0.2s ease;
+}
+
+.nav-btn:active {
+  background: #f7fafc;
+  transform: scale(0.95);
+}
+
+.nav-icon {
+  width: 40rpx;
+  height: 40rpx;
+  opacity: 0.7;
+}
+
+/* 用户信息区域 */
+.user-section {
+  display: flex;
+  align-items: flex-start;
+  padding: 140rpx 40rpx 40rpx;
+  gap: 32rpx;
+}
+
+.avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.user-avatar {
+  width: 110rpx;
+  height: 110rpx;
+  border-radius: 50%;
+  background: #f0f0f0;
+  border: 3rpx solid #ffffff;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.avatar-wrapper:active .user-avatar {
+  transform: scale(0.95);
+}
+
+.edit-overlay {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 36rpx;
+  height: 36rpx;
+  background: #4299e1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx solid #ffffff;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.15);
+}
+
+.edit-icon {
+  width: 18rpx;
+  height: 18rpx;
+}
+
+.user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+/* 昵称编辑区域 - 完全重写 */
+.name-section {
+  width: 100%;
+  position: relative;
+}
+
+/* 显示模式 */
+.name-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 80rpx;
+}
+
+.user-name {
+  font-size: 42rpx;
+  font-weight: 700;
+  color: #2d3748;
+  line-height: 1.2;
+  flex: 1;
+  margin-right: 20rpx;
+  /* 限制昵称显示宽度，留出编辑按钮空间 */
+  max-width: 400rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6rpx;
+  background: #4299e1;
+  color: white;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  padding: 8rpx 10rpx;
+  border: none;
+  box-shadow: 0 2rpx 8rpx rgba(66, 153, 225, 0.25);
+  transition: all 0.2s ease;
+  font-weight: 600;
+  min-height: 40rpx;
+  height: 40rpx;
+  width: 100rpx; /* 强制固定宽度 */
+  min-width: 100rpx; /* 最小宽度 */
+  max-width: 100rpx; /* 最大宽度 */
+  box-sizing: border-box;
+}
+.edit-btn:active {
+  transform: scale(0.95);
+  opacity: 0.9;
+}
+
+.edit-icon {
+  width: 32rpx;
+  height: 32rpx;
+  opacity: 1; /* 确保图标清晰可见 */
+}
+
+/* 编辑模式 */
+.name-editor {
+  width: 100%;
+  position: relative;
+}
+
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  padding: 20rpx;
+  background: #f8fafc;
+  border-radius: 16rpx;
+  border: 2rpx solid #e2e8f0;
+  position: relative;
+  /* 恢复原来的编辑区域宽度 */
+  width: 520rpx;
+  max-width: 90vw;
+  box-sizing: border-box;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.nickname-input {
+  width: 400rpx;
+  height: 70rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2d3748;
+  background: #ffffff;
+  border: none;
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+  outline: none;
+  line-height: 1.4;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.nickname-input:focus {
+  box-shadow: 0 4rpx 12rpx rgba(66, 153, 225, 0.3);
+  transform: translateY(-1rpx);
+}
+
+.input-underline {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 3rpx;
+  background: linear-gradient(90deg, #4299e1, #667eea);
+  border-radius: 2rpx;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nickname-input:focus + .input-underline {
+  width: 100%;
+}
+
+.character-count {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 4rpx;
+}
+
+.count-text {
+  font-size: 22rpx;
+  color: #38a169;
+  font-weight: 500;
+}
+
+.count-text.warning {
+  color: #e53e3e;
+}
+
+.editor-buttons {
+  display: flex;
+  gap: 12rpx;
+  justify-content: center;
+  margin-top: 4rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 60rpx;
+  border: none;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+.action-btn.cancel {
+  background: #f7fafc;
+  color: #4a5568;
+  border: 2rpx solid #e2e8f0;
+}
+
+.action-btn.save {
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  color: white;
+  box-shadow: 0 2rpx 8rpx rgba(72, 187, 120, 0.3);
+}
+
+.security-badge {
+  margin-top: 4rpx;
+}
+
+.badge-text {
+  font-size: 22rpx;
+  color: #718096;
+  font-weight: 500;
+}
+
+/* 分割线 */
+.divider {
+  height: 1rpx;
+  background: #e2e8f0;
+  margin: 0 40rpx;
+}
+
+/* 功能网格 - 图标在上，文字在下 */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32rpx;
+  padding: 40rpx;
+  margin-bottom: 100rpx;
+}
+
+.grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+  padding: 24rpx;
+  background: #ffffff;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+  border: 1rpx solid #f1f5f9;
+  transition: all 0.3s ease;
+}
+
+.grid-item:active {
+  transform: translateY(1rpx);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.12);
+}
+
+.item-icon-wrapper {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border-radius: 16rpx;
+}
+
+.grid-icon {
+  width: 32rpx;
+  height: 32rpx;
+  opacity: 0.8;
+}
+
+.grid-text {
+  font-size: 26rpx;
+  color: #4a5568;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+}
+
+
+
+/* 头像选择弹窗 */
+.avatar-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.avatar-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: 20rpx;
+  width: 600rpx;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.1);
+  transform: scale(0.8) translateY(50rpx);
+  transition: all 0.3s ease;
+}
+
+.avatar-modal.show .modal-content {
+  transform: scale(1) translateY(0);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 40rpx 24rpx;
+  border-bottom: 1rpx solid #e2e8f0;
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.close-btn {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f7fafc;
+  transition: all 0.2s ease;
+}
+
+.close-btn:active {
+  background: #e2e8f0;
+  transform: scale(0.95);
+}
+
+.close-icon {
+  width: 32rpx;
+  height: 32rpx;
+  opacity: 0.6;
+}
+
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24rpx;
+  padding: 32rpx 40rpx;
+  max-height: 500rpx;
+  overflow-y: auto;
+}
+
+.avatar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  padding: 20rpx;
+  background: #f8fafc;
+  border-radius: 16rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.2s ease;
+}
+
+.avatar-item:active {
+  transform: scale(0.95);
+  border-color: #4299e1;
+  background: #ebf8ff;
+}
+
+.avatar-preview {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  border: 3rpx solid #ffffff;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.avatar-name {
+  font-size: 24rpx;
+  color: #4a5568;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* 底部提示 */
+.bottom-info {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  padding: 24rpx 40rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  border-top: 1rpx solid #e2e8f0;
+  box-shadow: 0 -2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.info-icon {
+  width: 36rpx;
+  height: 36rpx;
+  opacity: 0.6;
+}
+
+.info-text {
+  font-size: 24rpx;
+  color: #718096;
+  flex: 1;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* 现代化动画效果 */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* 统一信息面板进入动画 */
+.info-section {
+  animation: slideInUp 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.info-section:nth-child(1) { animation-delay: 0.2s; }
+.info-section:nth-child(2) { animation-delay: 0.3s; }
+
+/* 输入框焦点效果 */
+.nickname-input:focus {
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3rpx rgba(66, 153, 225, 0.1);
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .account-page {
+    padding: 0 20rpx;
+  }
+
+  .top-nav {
+    padding: 16rpx 20rpx;
+  }
+
+  .user-section {
+    padding: 120rpx 20rpx 30rpx;
+    gap: 20rpx;
+  }
+
+  .user-avatar {
+    width: 100rpx;
+    height: 100rpx;
+  }
+
+  .user-name {
+    font-size: 36rpx;
+  }
+
+  /* 编辑区域响应式调整 */
+  .editor-container {
+    padding: 16rpx;
+    border-radius: 12rpx;
+    gap: 12rpx;
+  }
+
+  .nickname-input {
+    width: 350rpx;
+    height: 60rpx;
+    font-size: 30rpx;
+    padding: 12rpx 16rpx;
+  }
+
+  .action-btn {
+    height: 50rpx;
+    font-size: 26rpx;
+    border-radius: 10rpx;
+  }
+
+  .edit-btn {
+    font-size: 22rpx;
+    padding: 10rpx 12rpx;
+    min-height: 50rpx;
+  }
+
+  .character-count {
+    padding-right: 2rpx;
+  }
+
+  .count-text {
+    font-size: 20rpx;
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20rpx;
+    padding: 20rpx;
+    margin-bottom: 60rpx;
+  }
+
+  .grid-item {
+    padding: 16rpx;
+  }
+
+  .bottom-info {
+    padding: 16rpx 20rpx;
+  }
+}

@@ -1,0 +1,42 @@
+<!-- 文件路径: pages/unlock/unlock.wxml -->
+<view class="container">
+  <!-- 顶部插画与步骤 2/2 -->
+  <view class="hero">
+    <!-- 欢迎标题（置于插画上方，整体居中，留出空隙） -->
+    <view class="welcome-title">欢迎回来</view>
+
+    <view class="illustration">
+      <image class="illu-img" src="/images/illus-unlock.jpg" mode="widthFix"></image>
+      <text class="illu-text">快速解锁 · 更高效</text>
+    </view>
+
+    <!-- 与设置页一致：插画与步骤之间空2~3行（用 margin 控制，见 wxss） -->
+    <view class="stepper stepper-large">
+      <view class="step active">2/2 选择解锁方式</view>
+    </view>
+  </view>
+
+  <form bindsubmit="handleUnlock">
+    <view class="input-wrapper">
+      <input 
+        name="masterPassword"
+        type="password"
+        class="input-field"
+        placeholder="请输入主密码"
+        placeholder-class="placeholder"
+      />
+    </view>
+    <button class="unlock-button" form-type="submit">解锁</button>
+  </form>
+
+  <view class="divider">
+    <view class="line"></view>
+    <view class="divider-text">或</view>
+    <view class="line"></view>
+  </view>
+
+  <button class="bio-button" bindtap="tryBiometricUnlock">
+    <image class="bio-icon" src="/images/fingerprint.png"></image>
+    生物识别
+  </button>
+</view>

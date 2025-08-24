@@ -1,0 +1,30 @@
+<!-- 文件路径: pages/trash/trash.wxml -->
+<view class="container">
+  <!-- 有已删除项目时显示列表 -->
+  <block wx:if="{{deletedItems.length > 0}}">
+    <view class="page-title">回收站</view>
+    <view class="page-desc">项目将在30天后被永久清除</view>
+    
+    <view class="trash-list">
+      <view class="trash-item" wx:for="{{deletedItems}}" wx:key="id">
+        <view class="item-info">
+          <view class="item-title">{{item.title}}</view>
+          <view class="item-username">{{item.username}}</view>
+          <view class="item-delete-time">删除于: {{item.formattedDeletedAt}}</view>
+        </view>
+        <view class="item-actions">
+          <button class="action-btn restore-btn" data-id="{{item.id}}" bindtap="onRestore">恢复</button>
+          <button class="action-btn delete-btn" data-id="{{item.id}}" bindtap="onPermanentlyDelete">彻底删除</button>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 空状态 -->
+  <block wx:else>
+    <view class="empty-state">
+      <image class="empty-icon" src="/images/empty-box.png"></image>
+      <view class="empty-text">回收站是空的</view>
+    </view>
+  </block>
+</view>

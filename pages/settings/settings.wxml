@@ -1,0 +1,60 @@
+<!-- 文件路径: pages/settings/settings.wxml (最终版) -->
+<view class="page-container">
+  <view class="page-title">设置</view>
+
+  <view class="setting-group">
+    <view class="group-title">账户</view>
+    <view class="setting-item" bindtap="goToAccountCenter">
+      <image class="item-icon" src="/images/icon-user.png"></image>
+      <text class="item-label">账户中心</text>
+      <view class="item-hint">云同步与管理</view>
+      <image class="arrow-right" src="/images/arrow-right.png"></image>
+    </view>
+  </view>
+
+  <view class="setting-group">
+    <view class="group-title">安全</view>
+    <view class="setting-item" bindtap="goToSecurityPage">
+      <image class="item-icon" src="/images/icon-key.png"></image>
+      <text class="item-label">修改主密码</text>
+      <image class="arrow-right" src="/images/arrow-right.png"></image>
+    </view>
+
+    <!-- 生物识别解锁：使用受控 switch + 状态说明 -->
+    <view class="setting-item">
+      <image class="item-icon" src="/images/icon-biometrics.png"></image>
+      <view class="item-label-group">
+        <text class="item-label">生物识别解锁</text>
+        <text class="item-desc">
+          {{ !canUseBiometric ? '设备不支持' : (!enrolled ? '未录入指纹/面容' : '指纹或面容') }}
+        </text>
+      </view>
+      <switch checked="{{biometricsEnabled}}"
+              disabled="{{!canUseBiometric || !enrolled}}"
+              color="#07c160"
+              bindchange="onToggleBiometrics" />
+    </view>
+  </view>
+
+  <view class="setting-group">
+    <view class="group-title">数据</view>
+    <view class="setting-item" bindtap="goToDataManagement">
+      <image class="item-icon" src="/images/icon-data.png"></image>
+      <text class="item-label">数据导入/导出</text>
+      <image class="arrow-right" src="/images/arrow-right.png"></image>
+    </view>
+    <view class="setting-item" bindtap="goToTrashPage">
+      <image class="item-icon" src="/images/icon-trash.png"></image>
+      <text class="item-label">回收站</text>
+      <image class="arrow-right" src="/images/arrow-right.png"></image>
+    </view>
+  </view>
+
+  <view class="setting-group">
+    <view class="setting-item" bindtap="goToAboutPage">
+      <image class="item-icon" src="/images/icon-info.png"></image>
+      <text class="item-label">关于我们</text>
+      <image class="arrow-right" src="/images/arrow-right.png"></image>
+    </view>
+  </view>
+</view>

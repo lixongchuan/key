@@ -1,0 +1,173 @@
+<!-- 数据管理页面 - 极简蓝色主题 -->
+<view class="dm-page">
+
+  <!-- 导出功能卡片 -->
+  <view class="feature-card export-card">
+    <view class="card-header">
+      <view class="card-icon">
+        <image class="card-icon-image" src="/images/icon-save.png"></image>
+      </view>
+      <view class="card-title-section">
+        <text class="card-title">导出数据</text>
+        <text class="card-subtitle">将选中的密码条目导出为加密文件</text>
+      </view>
+    </view>
+
+    <!-- 密码输入区域 -->
+    <view class="password-section">
+      <view class="input-group">
+        <view class="input-label">设置临时密码</view>
+        <view class="input-container">
+          <input
+            class="password-input"
+            placeholder="输入用于加密文件的密码"
+            password="{{!exportPwdVisible}}"
+            value="{{exportPwd}}"
+            bindinput="onExportPwdInput"
+            maxlength="32"
+          />
+          <view class="input-actions">
+            <text class="visibility-toggle" bindtap="toggleExportPwdVisible">
+              {{exportPwdVisible ? '隐藏' : '显示'}}
+            </text>
+          </view>
+        </view>
+        <text class="input-hint">此密码仅用于本次导出，不会保存到设备</text>
+      </view>
+    </view>
+
+    <!-- 选择条目区域 -->
+    <view class="selection-section">
+      <view class="selection-header">
+        <text class="selection-title">选择要导出的条目</text>
+        <view class="selection-controls">
+          <checkbox-group bindchange="onToggleSelectAll">
+            <label class="select-all-label">
+              <checkbox value="all" checked="{{isAllSelected}}" />
+              <text class="select-all-text">全选</text>
+            </label>
+          </checkbox-group>
+          <text class="selection-count">({{selectedItems.length}}/{{vault.length}})</text>
+        </view>
+      </view>
+
+      <view class="items-list">
+        <scroll-view scroll-y class="items-scroll" show-scrollbar="{{false}}">
+          <checkbox-group class="items-group" bindchange="onItemSelect">
+            <block wx:for="{{vault}}" wx:key="id">
+              <label class="item-label" data-id="{{item.id}}">
+                <checkbox value="{{item.id}}" checked="{{item.selected}}" />
+                <view class="item-content">
+                  <view class="item-title">{{item.title || '未命名'}}</view>
+                  <view class="item-subtitle">{{item.username}}</view>
+                  <view class="item-url" wx:if="{{item.url}}">{{item.url}}</view>
+                </view>
+              </label>
+            </block>
+          </checkbox-group>
+        </scroll-view>
+      </view>
+    </view>
+
+    <!-- 导出按钮 -->
+    <view class="export-actions">
+      <button class="export-btn" bindtap="doExportFile" disabled="{{selectedItems.length === 0 || !exportPwd}}">
+        <image class="btn-icon" src="/images/icon-save.png"></image>
+        <text class="btn-text">导出为文件</text>
+      </button>
+    </view>
+
+    <!-- 导出状态提示 -->
+    <view class="status-section" wx:if="{{exportStatus}}">
+      <view class="status-card {{exportStatus.type}}">
+        <view class="status-icon">
+          <image class="status-icon-image" src="{{exportStatus.icon}}"></image>
+        </view>
+        <view class="status-content">
+          <text class="status-title">{{exportStatus.title}}</text>
+          <text class="status-message">{{exportStatus.message}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 导入功能卡片 -->
+  <view class="feature-card import-card">
+    <view class="card-header">
+      <view class="card-icon">
+        <image class="card-icon-image" src="/images/icon-import.png"></image>
+      </view>
+      <view class="card-title-section">
+        <text class="card-title">导入数据</text>
+        <text class="card-subtitle">从导出的加密文件恢复密码数据</text>
+      </view>
+    </view>
+
+    <!-- 导入按钮区域 -->
+    <view class="import-actions">
+      <button class="import-btn" bindtap="importFromFile">
+        <image class="btn-icon" src="/images/icon-import.png"></image>
+        <text class="btn-text">选择文件导入</text>
+      </button>
+    </view>
+
+    <!-- 导入预览区域 -->
+    <view class="import-preview-section" wx:if="{{importMeta}}">
+      <view class="preview-card">
+        <view class="preview-header">
+          <text class="preview-title">文件信息</text>
+        </view>
+        <view class="preview-content">
+          <view class="preview-item">
+            <text class="preview-label">数据版本</text>
+            <text class="preview-value">{{importMeta.version}}</text>
+          </view>
+          <view class="preview-item">
+            <text class="preview-label">导出时间</text>
+            <text class="preview-value">{{importMeta.createdAt}}</text>
+          </view>
+          <view class="preview-item">
+            <text class="preview-label">包含条目</text>
+            <text class="preview-value">{{importMeta.itemCount}} 条</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 密码输入和确认按钮区域 -->
+      <view class="import-password-section">
+        <view class="input-group">
+          <view class="input-label">输入导入密码</view>
+          <view class="input-container">
+            <input
+              class="password-input"
+              placeholder="输入导出时设置的密码"
+              password="{{!importPwdVisible}}"
+              value="{{importPwd}}"
+              bindinput="onImportPwdInput"
+              maxlength="32"
+            />
+            <view class="input-actions">
+              <text class="visibility-toggle" bindtap="toggleImportPwdVisible">
+                {{importPwdVisible ? '隐藏' : '显示'}}
+              </text>
+            </view>
+          </view>
+        </view>
+
+        <view class="import-confirm-actions">
+          <button class="confirm-btn" bindtap="confirmImport" disabled="{{!importPwd}}">
+            <text class="btn-text">确认导入</text>
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部安全提示 -->
+  <view class="security-footer">
+    <view class="security-content">
+      <image class="security-icon" src="/images/icon-shield-check.png"></image>
+      <text class="security-text">所有数据都经过端到端加密，仅在本地解密处理</text>
+    </view>
+  </view>
+</view>

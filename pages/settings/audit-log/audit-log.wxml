@@ -1,0 +1,76 @@
+<!-- 苹果潮流大牌风格的操作日志页面 -->
+<view class="audit-log-page">
+  <!-- 顶部标题区域 -->
+  <view class="header-section">
+    <text class="page-title">操作日志</text>
+    <text class="page-subtitle">记录您的每一次操作</text>
+  </view>
+
+  <!-- 主要内容区域 -->
+  <view class="content-section">
+    <block wx:if="{{auditLogs.length > 0}}">
+      <!-- 日志统计卡片 -->
+      <view class="stats-card">
+        <view class="stat-item">
+          <text class="stat-number">{{auditLogs.length}}</text>
+          <text class="stat-label">总操作数</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-number">{{getRecentLogs(7).length}}</text>
+          <text class="stat-label">近7天</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-number">{{getRecentLogs(30).length}}</text>
+          <text class="stat-label">近30天</text>
+        </view>
+      </view>
+
+      <!-- 日志列表 -->
+      <view class="logs-container">
+        <scroll-view class="logs-scroll-view" scroll-y="true" show-scrollbar="true" enhanced="true" bounces="true">
+          <view class="log-item" wx:for="{{auditLogs}}" wx:key="timestamp">
+            <!-- 时间线 -->
+            <view class="timeline">
+              <view class="timeline-dot {{item.action}}"></view>
+              <view class="timeline-line"></view>
+            </view>
+
+            <!-- 日志内容 -->
+            <view class="log-content">
+              <view class="log-header">
+                <text class="log-time">{{item.formattedTime}}</text>
+                <view class="log-action {{item.action}}">
+                  <text class="action-text">{{getActionText(item.action)}}</text>
+                </view>
+              </view>
+              <view class="log-details">{{item.details}}</view>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+
+      <!-- 底部操作按钮 -->
+      <view class="action-buttons">
+        <button class="action-btn secondary" bindtap="exportLogs">
+          <image class="btn-icon" src="/images/icon-save.png"></image>
+          <text>导出日志</text>
+        </button>
+        <button class="action-btn danger" bindtap="clearLogs">
+          <image class="btn-icon" src="/images/icon-trash.png"></image>
+          <text>清空日志</text>
+        </button>
+      </view>
+    </block>
+
+    <block wx:else>
+      <!-- 空状态 -->
+      <view class="empty-state">
+        <view class="empty-icon-wrapper">
+          <image class="empty-icon" src="/images/empty-box.png"></image>
+        </view>
+        <text class="empty-title">暂无操作日志</text>
+        <text class="empty-subtitle">您的操作记录将显示在这里</text>
+      </view>
+    </block>
+  </view>
+</view>
