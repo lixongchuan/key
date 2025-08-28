@@ -102,6 +102,10 @@
   overflow: hidden;
   transform: translateY(0px);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .card:hover {
@@ -136,17 +140,44 @@
   line-height: 1.7;
   font-size: 26rpx;
   margin-bottom: 8rpx;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.email-text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.repo-url {
+  font-size: 22rpx;
+  color: #333;
+  word-break: break-all;
 }
 .bold { font-weight: 600; }
-.mono { font-family: Menlo, SFMono-Regular, Consolas, monospace; color: #333; }
+.mono {
+  font-family: Menlo, SFMono-Regular, Consolas, monospace;
+  color: #333;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  flex: 1;
+  min-width: 0;
+}
 
 .row {
   margin-top: 8rpx;
   display: flex;
   align-items: center;
   gap: 12rpx;
+  width: 100%;
 }
-.label { color: #666; width: 160rpx; font-size: 26rpx; }
+.label {
+  color: #666;
+  width: 120rpx;
+  font-size: 26rpx;
+  flex-shrink: 0;
+}
 .link {
   height: 56rpx;
   line-height: 56rpx;

@@ -4,6 +4,11 @@ App({
     sessionKey: null,
     isLocked: true,
     biometricsEnabled: false, // 新增：生物识别是否开启的全局状态
+    // [新增] 生物识别状态管理
+    biometricUnlockCompleted: false, // 是否已完成生物识别解锁
+    biometricCheckInProgress: false, // 是否正在进行生物识别检查
+    unlockPageReady: false, // 解锁页面是否已准备就绪
+    isNavigatingToHome: false, // [新增] 是否正在跳转到首页，防止重复检查
     // [优化] 智能刷新系统，区分操作类型和时间戳
     needsRefresh: {
       index: {
@@ -88,6 +93,186 @@ App({
     }
   },
 
+  // [优化] 生物识别状态管理器 - 增强版，支持取消后的持久禁用
+  biometricStateManager: {
+    // 获取App实例，确保globalData可用
+    getApp() {
+      const app = getApp();
+      if (!app || !app.globalData) {
+        console.error('生物识别状态管理器：无法获取App实例或globalData');
+        return null;
+      }
+      return app;
+    },
+
+    // 重置生物识别状态（用于新解锁会话）
+    resetBiometricState() {
+      console.log('生物识别状态管理器：重置状态');
+      const app = this.getApp();
+      if (!app) return;
+
+      app.globalData.biometricUnlockCompleted = false;
+      app.globalData.biometricCheckInProgress = false;
+      app.globalData.unlockPageReady = false;
+    },
+
+    // 标记生物识别解锁已完成
+    markBiometricUnlockCompleted() {
+      console.log('生物识别状态管理器：标记解锁完成');
+      const app = this.getApp();
+      if (!app) return;
+
+      app.globalData.biometricUnlockCompleted = true;
+      app.globalData.biometricCheckInProgress = false;
+      // 解锁成功后清除用户取消记录
+      wx.removeStorageSync('biometric_user_cancelled');
+      wx.removeStorageSync('biometric_cancel_timestamp');
+    },
+
+    // 检查是否可以进行生物识别（增强版）
+    canPerformBiometricCheck(ignoreCancelCheck = false) {
+      console.log('生物识别状态管理器：检查是否可以进行生物识别', { ignoreCancelCheck });
+
+      const app = this.getApp();
+      if (!app) {
+        console.log('生物识别状态管理器：无法获取App实例');
+        return false;
+      }
+
+      // [关键修复] 0. 首先检查是否在解锁页面 - 首页绝对不允许
+      if (!this.isOnUnlockPage()) {
+        console.log('生物识别状态管理器：不在解锁页面，绝对禁止生物识别');
+        return false;
+      }
+
+      // [新增] 安全检查：如果全局防护标志已设置，绝对禁止
+      if (app.globalData.biometricUnlockCompleted === true &&
+          app.globalData.isLocked === false &&
+          app.globalData.biometricCheckInProgress === false) {
+        console.log('生物识别状态管理器：检测到首页防护标志，绝对禁止生物识别');
+        return false;
+      }
+
+      // 1. 检查应用是否已解锁
+      if (!app.globalData.isLocked) {
+        console.log('生物识别状态管理器：应用已解锁，跳过生物识别');
+        return false;
+      }
+
+      // 2. 检查生物识别是否已完成
+      if (app.globalData.biometricUnlockCompleted) {
+        console.log('生物识别状态管理器：生物识别已完成，跳过');
+        return false;
+      }
+
+      // 3. 检查是否正在进行中
+      if (app.globalData.biometricCheckInProgress) {
+        console.log('生物识别状态管理器：正在进行中，跳过');
+        return false;
+      }
+
+      // 4. 检查用户是否取消了生物识别（30分钟内不再弹窗）
+      if (!ignoreCancelCheck) {
+        const cancelTimestamp = wx.getStorageSync('biometric_cancel_timestamp');
+        if (cancelTimestamp) {
+          const now = Date.now();
+          const timeDiff = now - cancelTimestamp;
+          const thirtyMinutes = 30 * 60 * 1000;
+
+          if (timeDiff < thirtyMinutes) {
+            console.log('生物识别状态管理器：用户最近取消，跳过弹窗');
+            return false;
+          } else {
+            // 30分钟后清除记录
+            wx.removeStorageSync('biometric_user_cancelled');
+            wx.removeStorageSync('biometric_cancel_timestamp');
+          }
+        }
+      }
+
+      console.log('生物识别状态管理器：可以执行生物识别');
+      return true;
+    },
+
+    // 开始生物识别检查
+    startBiometricCheck() {
+      console.log('生物识别状态管理器：开始检查');
+      const app = this.getApp();
+      if (!app) return;
+
+      app.globalData.biometricCheckInProgress = true;
+    },
+
+    // 结束生物识别检查
+    endBiometricCheck() {
+      console.log('生物识别状态管理器：结束检查');
+      const app = this.getApp();
+      if (!app) return;
+
+      app.globalData.biometricCheckInProgress = false;
+    },
+
+    // 标记解锁页面准备就绪
+    markUnlockPageReady() {
+      console.log('生物识别状态管理器：解锁页面准备就绪');
+      const app = this.getApp();
+      if (!app) return;
+
+      app.globalData.unlockPageReady = true;
+    },
+
+    // 检查是否在解锁页面
+    isOnUnlockPage() {
+      const pages = getCurrentPages();
+      const currentPage = pages[pages.length - 1];
+      return currentPage && currentPage.route === 'pages/unlock/unlock';
+    },
+
+    // [新增] 记录用户取消生物识别
+    recordUserCancelledBiometric() {
+      console.log('生物识别状态管理器：记录用户取消');
+      const now = Date.now();
+      wx.setStorageSync('biometric_user_cancelled', true);
+      wx.setStorageSync('biometric_cancel_timestamp', now);
+    },
+
+    // [新增] 检查是否应该自动弹窗（结合页面级状态）
+    shouldAutoShowBiometricPrompt(pageInstance, ignoreCancelCheck = false) {
+      console.log('生物识别状态管理器：检查是否应该自动弹窗', { ignoreCancelCheck });
+
+      // 1. 全局条件检查
+      if (!this.canPerformBiometricCheck(ignoreCancelCheck)) {
+        return false;
+      }
+
+      // 2. 页面级条件检查
+      if (!pageInstance || !pageInstance.data || !pageInstance.data.pageReady) {
+        console.log('生物识别状态管理器：页面未渲染完成');
+        return false;
+      }
+
+      if (pageInstance.data.isAutoTriedBio) {
+        console.log('生物识别状态管理器：已尝试过自动弹窗');
+        return false;
+      }
+
+      if (pageInstance.data.biometricCompleted) {
+        console.log('生物识别状态管理器：生物识别已完成');
+        return false;
+      }
+
+      // 3. 检查生物识别开关
+      const biometricsEnabled = wx.getStorageSync('biometrics_enabled');
+      if (!biometricsEnabled) {
+        console.log('生物识别状态管理器：生物识别未启用');
+        return false;
+      }
+
+      console.log('生物识别状态管理器：应该自动弹窗');
+      return true;
+    }
+  },
+
   // 初始化刷新标志
   initRefreshFlags() {
     this.globalData.needsRefresh = {
@@ -105,7 +290,7 @@ App({
 
   onLaunch() {
     // 读取生物识别状态
-    this.globalData.biometricsEnabled = wx.getStorageSync('biometrics_enabled') || false;
+    this.globalData.biometricsEnabled = wx.getStorageSync('biometrics_enabled') !== null ? wx.getStorageSync('biometrics_enabled') : true;
 
     // 检查是否已初始化
     const isInitialized = wx.getStorageSync('is_initialized');
@@ -168,5 +353,117 @@ App({
     } catch (e) {
       console.error("记录审计日志失败:", e);
     }
+  },
+
+  // ===== 紧急数据恢复功能 =====
+
+  // 检查是否存在数据恢复备份
+  checkDataRecoveryBackup() {
+    try {
+      const backupData = wx.getStorageSync('__migration_backup__');
+      const recoveryMeta = wx.getStorageSync('__recovery_meta__');
+
+      if (backupData && recoveryMeta) {
+        console.log('检测到数据恢复备份，准备恢复选项');
+        return { hasBackup: true, backupData, recoveryMeta };
+      }
+
+      return { hasBackup: false };
+    } catch (e) {
+      console.error('检查恢复备份失败:', e);
+      return { hasBackup: false };
+    }
+  },
+
+  // 提供数据恢复选项
+  offerDataRecovery() {
+    const recovery = this.checkDataRecoveryBackup();
+
+    if (!recovery.hasBackup) {
+      console.log('没有找到数据恢复备份');
+      return;
+    }
+
+    wx.showModal({
+      title: '数据恢复检测',
+      content: '检测到您有数据修改失败的备份。是否要恢复之前的数据？',
+      confirmText: '恢复数据',
+      cancelText: '稍后再说',
+      success: (res) => {
+        if (res.confirm) {
+          this.performDataRecovery(recovery.backupData, recovery.recoveryMeta);
+        }
+      }
+    });
+  },
+
+  // 执行数据恢复
+  performDataRecovery(backupData, recoveryMeta) {
+    wx.showLoading({
+      title: '正在恢复数据...',
+      mask: true
+    });
+
+    try {
+      const backup = JSON.parse(backupData);
+      const meta = JSON.parse(recoveryMeta);
+
+      // 恢复数据
+      let recoveredCount = 0;
+      for (const [key, value] of Object.entries(backup)) {
+        if (value) {
+          wx.setStorageSync(key, value);
+          recoveredCount++;
+        }
+      }
+
+      // 恢复元信息
+      if (meta.originalMeta) {
+        wx.setStorageSync('vault_meta', JSON.stringify(meta.originalMeta));
+      }
+
+      // 恢复sessionKey
+      if (meta.sessionKey) {
+        this.globalData.sessionKey = meta.sessionKey;
+        wx.setStorageSync('current_session_key', meta.sessionKey);
+      }
+
+      // 清理备份
+      wx.removeStorageSync('__migration_backup__');
+      wx.removeStorageSync('__recovery_meta__');
+
+      wx.hideLoading();
+      wx.showToast({
+        title: `成功恢复 ${recoveredCount} 项数据`,
+        icon: 'success',
+        duration: 3000
+      });
+
+      // 提示用户重新启动应用
+      setTimeout(() => {
+        wx.showModal({
+          title: '恢复完成',
+          content: '数据已恢复完成，请重新启动应用以确保一切正常工作。',
+          showCancel: false,
+          confirmText: '我知道了'
+        });
+      }, 3500);
+
+    } catch (e) {
+      wx.hideLoading();
+      console.error('数据恢复失败:', e);
+      wx.showToast({
+        title: '恢复失败，请联系技术支持',
+        icon: 'none',
+        duration: 3000
+      });
+    }
+  },
+
+  // 在应用启动时检查恢复选项
+  checkRecoveryOnLaunch() {
+    setTimeout(() => {
+      this.offerDataRecovery();
+    }, 2000);
   }
-})
+});

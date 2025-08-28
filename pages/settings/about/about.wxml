@@ -18,25 +18,20 @@
     <view class="text">本小程序由 <text class="bold">lxc</text> 开发与维护。</view>
     <view class="row">
       <text class="label">联系邮箱</text>
-      <text class="mono">lixongchuan@outlook.com</text>
+      <text class="mono email-text">lixongchuan@outlook.com</text>
       <button class="link" size="mini" bindtap="copyEmail">复制</button>
     </view>
   </view>
 
-  <!-- 暂时隐藏开源信息部分  -->
-  <!--
   <view class="card">
     <view class="card-title">开源信息</view>
-    <view class="text">
-      项目源代码已在 GitHub 开源，欢迎 Star、Issue 与 PR 一同完善体验与安全性。
-    </view>
+    <view class="text">项目源代码已在 GitHub 开源，欢迎 Star、Issue 与 PR 一同完善体验与安全性。</view>
     <view class="row">
       <text class="label">仓库地址</text>
-      <text class="mono">{{repoUrl || '待补充'}}</text>
+      <text class="mono repo-url">{{repoUrl || '待补充'}}</text>
       <button class="link" size="mini" bindtap="copyRepo">复制</button>
     </view>
-  </view>
-  -->
+ </view>
 
   <!-- 暂时隐藏相关产品部分  -->
   <!--

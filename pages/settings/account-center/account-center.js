@@ -47,7 +47,7 @@ Page({
     // 设置默认值
     userProfile = {
       avatarUrl: customAvatar || this.data.avatarOptions[0].path,
-      nickName: userProfile.nickName || '风',
+      nickName: userProfile.nickName || '我爱钉钉',
       ...userProfile
     };
 
@@ -240,6 +240,9 @@ Page({
   // 更新头像
   updateAvatar(avatarPath, successMessage = '头像已更新') {
     try {
+      // 获取旧头像路径
+      const oldAvatarPath = this.data.userProfile.avatarUrl || '';
+
       // 保存到本地存储
       wx.setStorageSync('custom_avatar', avatarPath);
 
@@ -255,14 +258,34 @@ Page({
       // 设置全局刷新标志，让首页更新用户头像
       app.globalData.needsRefresh.userProfile = true;
 
-      // 记录操作日志
-      app.addAuditLog('update_avatar', '用户更新了头像');
+      // 记录操作日志 - 记录旧头像和新头像的变化
+      const oldAvatarName = this.getAvatarDisplayName(oldAvatarPath);
+      const newAvatarName = this.getAvatarDisplayName(avatarPath);
+      app.addAuditLog('update_avatar', `用户将头像从"${oldAvatarName}"更改为"${newAvatarName}"`);
 
       wx.showToast({ title: successMessage, icon: 'success' });
     } catch (error) {
       console.error('更新头像失败:', error);
       wx.showToast({ title: '更新失败，请重试', icon: 'none' });
     }
+  },
+
+  // 获取头像显示名称
+  getAvatarDisplayName(avatarPath) {
+    if (!avatarPath) return '默认头像';
+
+    // 查找预置头像名称
+    const presetAvatar = this.data.avatarOptions.find(option => option.path === avatarPath);
+    if (presetAvatar) {
+      return presetAvatar.name;
+    }
+
+    // 如果是自定义头像，返回文件名或路径的描述
+    if (avatarPath.includes('tmp_') || avatarPath.includes('wxfile://')) {
+      return '自定义头像';
+    }
+
+    return '自定义头像';
   },
 
   // 切换编辑昵称模式
@@ -282,7 +305,7 @@ Page({
     this.setData({
       isEditingNickname: true,
       editingNickname: currentNickname,
-      originalNickname: currentNickname
+      originalNickname: currentNickname // 保存编辑前的原始值
     });
   },
 
@@ -297,6 +320,7 @@ Page({
   // 保存昵称
   saveNickname() {
     const newNickname = this.data.editingNickname.trim();
+    const oldNickname = this.data.originalNickname; // 保存修改前的昵称，用于日志记录
 
     // 验证昵称
     if (!newNickname) {
@@ -310,7 +334,7 @@ Page({
     }
 
     // 检查是否与原昵称相同
-    if (newNickname === this.data.originalNickname) {
+    if (newNickname === oldNickname) {
       this.cancelEditNickname();
       return;
     }
@@ -323,16 +347,16 @@ Page({
       wx.setStorageSync('wx_user_profile', userProfile);
       app.globalData.userProfile = userProfile;
 
+      // 记录操作日志 - 使用修改前的昵称
+      app.addAuditLog('update_nickname', `用户将昵称从"${oldNickname}"更改为"${newNickname}"`);
+
       // 更新页面数据
       this.setData({
         userProfile: userProfile,
         isEditingNickname: false,
         editingNickname: '',
-        originalNickname: newNickname
+        originalNickname: newNickname // 更新为新的昵称，用于下次编辑
       });
-
-      // 记录操作日志
-      app.addAuditLog('update_nickname', `用户将昵称从"${this.data.originalNickname}"更改为"${newNickname}"`);
 
       wx.showToast({ title: '昵称已保存', icon: 'success' });
     } catch (error) {

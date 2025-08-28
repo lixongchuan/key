@@ -1,4 +1,3 @@
-// 文件路径: pages/settings/settings.js (重构版)
 const app = getApp(); // 获取App实例，用于全局变量通信
 
 Page({
@@ -9,7 +8,7 @@ Page({
   },
   onShow() {
     // 读取生物识别开关
-    const enabled = wx.getStorageSync('biometrics_enabled') || false;
+    const enabled = wx.getStorageSync('biometrics_enabled') !== null ? wx.getStorageSync('biometrics_enabled') : true;
     this.setData({ biometricsEnabled: !!enabled });
 
     // 检测设备支持与是否已录入
@@ -24,14 +23,30 @@ Page({
         const mode = modes[0];
         wx.checkIsSoterEnrolledInDevice({
           checkAuthMode: mode,
-          success: (r) => this.setData({ canUseBiometric: true, enrolled: !!r.isEnrolled }),
+          success: (r) => {
+            const enrolled = !!r.isEnrolled;
+            this.setData({ canUseBiometric: true, enrolled });
+
+    // 如果开关默认开启且已录入生物信息，必须有sessionKey，但还没有生物识别凭据，则静默启用
+    if (enabled && enrolled && app.globalData.sessionKey) {
+      const openid = wx.getStorageSync('wx_openid') || '';
+      const hasBioCredential = !!wx.getStorageSync(`bio_unlock_${openid}`);
+
+      if (!hasBioCredential) {
+        console.log('检测到生物识别开关开启但缺少凭据，开始自动启用...');
+        this.autoEnableBiometricsIfNeeded();
+      } else {
+        console.log('生物识别凭据已存在，无需自动启用');
+      }
+    }
+          },
           fail: () => this.setData({ canUseBiometric: true, enrolled: false })
         });
       },
       fail: () => this.setData({ canUseBiometric: false, enrolled: false })
     });
     this.setData({
-      biometricsEnabled: wx.getStorageSync('biometrics_enabled') || false
+      biometricsEnabled: wx.getStorageSync('biometrics_enabled') !== null ? wx.getStorageSync('biometrics_enabled') : true
     });
   },
 
@@ -86,6 +101,123 @@ Page({
     }
   },
 
+  // 自动检查并静默启用生物识别（当开关默认开启且满足条件时使用）
+  autoEnableBiometricsIfNeeded() {
+    try {
+      console.log('开始检查是否需要自动启用生物识别...');
+
+      const sessionKey = app.globalData.sessionKey;
+      if (!sessionKey) {
+        console.log('❌ 没有有效的sessionKey，跳过自动启用生物识别');
+        return;
+      }
+
+      // 确保openid存在，如果不存在则生成一个
+      let openid = wx.getStorageSync('wx_openid') || '';
+      if (!openid) {
+        console.log('📝 openid不存在，生成新的openid');
+        openid = 'sim_' + Math.random().toString(36).substr(2, 9);
+        wx.setStorageSync('wx_openid', openid);
+        console.log('✅ 已生成并保存新的openid:', openid);
+      }
+
+      // 检查是否已经存在生物识别凭据
+      const existingBioUnlock = wx.getStorageSync(`bio_unlock_${openid}`);
+      if (existingBioUnlock) {
+        console.log('✅ 生物识别凭据已存在，无需自动启用');
+        return;
+      }
+
+      console.log('🔄 满足条件，开始自动静默启用生物识别...');
+
+      // 生成设备盐
+      let deviceSalt = wx.getStorageSync('bio_device_salt');
+      if (!deviceSalt) {
+        deviceSalt = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+        wx.setStorageSync('bio_device_salt', deviceSalt);
+        console.log('📝 已生成新的设备盐');
+      }
+
+      // 加密主密钥
+      const { deriveKey, encrypt } = require('../../utils/crypto-helper.js');
+      const BIO_KDF_TAG = 'bio.unlock.fixed.tag.v1';
+      const kbio = deriveKey(BIO_KDF_TAG, deviceSalt);
+      const enc_km = encrypt(sessionKey, kbio);
+
+      // 保存生物识别凭据
+      const record = {
+        enc_km,
+        createdAt: Date.now(),
+        version: 1
+      };
+      wx.setStorageSync(`bio_unlock_${openid}`, JSON.stringify(record));
+
+      // 确保总开关也开启
+      wx.setStorageSync('biometrics_enabled', true);
+      this.setData({ biometricsEnabled: true });
+
+      console.log('✅ 生物识别已自动启用完成');
+
+      // 记录审计日志
+      app.addAuditLog('auto_enable_biometrics', '设置页面自动启用生物识别');
+
+    } catch (e) {
+      console.error('❌ 自动启用生物识别失败:', e);
+      // 静默失败，不打扰用户，但可以重试一次
+      setTimeout(() => {
+        this.retryAutoEnableBiometrics();
+      }, 2000);
+    }
+  },
+
+  // 重试自动启用生物识别
+  retryAutoEnableBiometrics() {
+    try {
+      console.log('🔄 重试自动启用生物识别...');
+
+      const sessionKey = app.globalData.sessionKey;
+      const openid = wx.getStorageSync('wx_openid') || '';
+
+      if (!sessionKey || !openid) {
+        console.log('重试条件不满足，放弃重试');
+        return;
+      }
+
+      const existingBioUnlock = wx.getStorageSync(`bio_unlock_${openid}`);
+      if (existingBioUnlock) {
+        console.log('重试时发现凭据已存在');
+        return;
+      }
+
+      // 重新生成设备盐和凭据
+      let deviceSalt = wx.getStorageSync('bio_device_salt');
+      if (!deviceSalt) {
+        deviceSalt = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+        wx.setStorageSync('bio_device_salt', deviceSalt);
+      }
+
+      const { deriveKey, encrypt } = require('../../utils/crypto-helper.js');
+      const BIO_KDF_TAG = 'bio.unlock.fixed.tag.v1';
+      const kbio = deriveKey(BIO_KDF_TAG, deviceSalt);
+      const enc_km = encrypt(sessionKey, kbio);
+
+      const record = {
+        enc_km,
+        createdAt: Date.now(),
+        version: 1
+      };
+      wx.setStorageSync(`bio_unlock_${openid}`, JSON.stringify(record));
+
+      wx.setStorageSync('biometrics_enabled', true);
+      this.setData({ biometricsEnabled: true });
+
+      console.log('✅ 重试自动启用生物识别成功');
+
+    } catch (e) {
+      console.error('❌ 重试自动启用生物识别失败:', e);
+    }
+  },
+
   // 静默启用生物识别（不弹出验证窗口，不跳转页面）
   enableBiometricsSilently() {
     try {
@@ -130,7 +262,7 @@ Page({
       wx.showToast({ title: '启用失败，请重试', icon: 'none' });
     }
   },
-  
+
   // 【已实现】账户中心入口
   goToAccountCenter() {
     wx.navigateTo({ url: '/pages/settings/account-center/account-center' });

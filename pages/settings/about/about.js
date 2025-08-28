@@ -1,7 +1,7 @@
 // 文件：pages/settings/about/about.js
 Page({
   data: {
-    repoUrl: 'https://github.com/your-repo', // GitHub仓库地址
+    repoUrl: 'https://github.com/lixongchuan/key', // GitHub仓库地址
     version: '1.0.0', // 应用版本
     buildTime: '' // 构建时间
   },
@@ -16,7 +16,7 @@ Page({
     this.setData({ buildTime });
 
     // 可在此读取远端配置或本地 storage 的仓库地址
-    // const url = wx.getStorageSync('repo_url') || 'https://github.com/your-repo';
+    // const url = wx.getStorageSync('repo_url') || 'https://github.com/lixongchuan/key';
     // this.setData({ repoUrl: url });
   },
   copyEmail() {
@@ -25,10 +25,8 @@ Page({
       success: () => wx.showToast({ title: '邮箱已复制', icon: 'success' })
     });
   },
-  // 暂时禁用复制功能
-  /*
   copyRepo() {
-    const url = this.data.repoUrl || 'https://github.com/your-repo';
+    const url = this.data.repoUrl || 'https://github.com/lixongchuan/key';
     wx.setClipboardData({
       data: url,
       success: () => wx.showToast({ title: '仓库地址已复制', icon: 'success' })
@@ -39,14 +37,5 @@ Page({
       data: '117.72.52.104:5000',
       success: () => wx.showToast({ title: '地址已复制', icon: 'success' })
     });
-  }
-  */
-
-  // 占位函数，防止调用错误
-  copyRepo() {
-    wx.showToast({ title: '功能暂时不可用', icon: 'none' });
-  },
-  copyProductUrl() {
-    wx.showToast({ title: '功能暂时不可用', icon: 'none' });
   }
 });

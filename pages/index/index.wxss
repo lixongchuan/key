@@ -619,27 +619,29 @@
 }
 
 .toolbar-btn {
-  padding: 12rpx 20rpx;
+  padding: 0 24rpx;
   border-radius: 18rpx;
   font-size: 26rpx;
   font-weight: 600;
   border: none;
   outline: none;
   transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   min-width: 100rpx;
   max-width: 200rpx;
-  height: 48rpx;
+  height: 56rpx;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.2;
+  line-height: 1;
+  box-sizing: border-box;
+  position: relative;
 }
 
 .toolbar-btn::after {
   border: none;
+  content: none;
+  display: none;
 }
 
 /* 全选按钮 - 增大尺寸优化居中 */
@@ -647,8 +649,8 @@
   background: rgba(0, 122, 255, 0.1);
   color: #007aff;
   border: 1rpx solid rgba(0, 122, 255, 0.2);
-  height: 48rpx;
-  padding: 12rpx 20rpx;
+  height: 56rpx;
+  padding: 0 24rpx;
   min-width: 100rpx;
 }
 
@@ -662,6 +664,8 @@
   background: rgba(142, 142, 147, 0.1);
   color: #1d1d1f;
   border: 1rpx solid rgba(142, 142, 147, 0.2);
+  height: 56rpx;
+  padding: 0 24rpx;
   min-width: 80rpx;
 }
 
@@ -675,8 +679,32 @@
   background: linear-gradient(135deg, #ff3b30 0%, #ff453a 100%);
   color: white;
   box-shadow: 0 4rpx 12rpx rgba(255, 59, 48, 0.25);
+  height: 56rpx;
+  padding: 0 24rpx;
   min-width: 120rpx;
 }
+
+/* 文本强制垂直居中与不被裁剪 */
+.select-all-text,
+.delete-text,
+.cancel-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+  width: 100%;
+  text-align: center;
+  line-height: 1;
+  font-size: 26rpx; /* 与取消按钮保持一致 */
+  font-weight: 600;
+  font-family: inherit;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* 精准补偿不同按钮在小程序中的基线差异 */
+.select-all-btn .select-all-text { transform: translate(-50%, -76%); }
+.delete-btn .delete-text, .cancel-btn .cancel-text { transform: translate(-50%, -50%); }
 
 .delete-btn:active {
   transform: scale(0.98);

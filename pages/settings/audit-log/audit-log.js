@@ -41,7 +41,7 @@ Page({
         logs = [];
       }
 
-      // 格式化时间为简洁格式
+      // 格式化时间为简洁格式，并兼容旧格式
       logs.forEach(log => {
         const date = new Date(log.timestamp);
         const month = date.getMonth() + 1;
@@ -50,6 +50,12 @@ Page({
         const hours = date.getHours().toString().padStart(2, '0');
         const minutes = date.getMinutes().toString().padStart(2, '0');
         log.formattedTime = `${year}.${month}.${day} ${hours}:${minutes}`;
+
+        // 兼容旧格式：如果有action/details但没有type/detail，则转换
+        if (log.action && !log.type) {
+          log.type = log.action;
+          log.detail = log.details || '无详情';
+        }
       });
 
       this.setData({ auditLogs: logs.reverse() }); // 最新日志在前
@@ -63,13 +69,14 @@ Page({
   },
 
   // 获取操作类型的中文描述
-  getActionText(action) {
+  getActionText(type) {
     const actionMap = {
       'login_success': '登录成功',
       'login_fail': '登录失败',
       'export_full': '导出完整库',
       'import_single': '导入单条',
       'export_single_item_qrcode': '导出二维码',
+      'change_master': '修改主密码',
       'change_master_password': '修改主密码',
       'enable_biometrics': '启用生物识别',
       'disable_biometrics': '关闭生物识别',
@@ -85,9 +92,14 @@ Page({
       'change_avatar': '更换头像',
       'view_security_report': '查看安全报告',
       'export_audit_log': '导出操作日志',
-      'clear_audit_log': '清空操作日志'
+      'clear_audit_log': '清空操作日志',
+      // 新增生物识别相关操作
+      'biometric_credential_update': '更新生物识别凭据',
+      'system_init': '系统初始化',
+      'rollback': '操作回滚',
+      'rollback_fail': '回滚失败'
     };
-    return actionMap[action] || action;
+    return actionMap[type] || type;
   },
 
   // 获取最近N天的日志数量
@@ -108,7 +120,7 @@ Page({
     }
 
     const logText = logs.map(log => {
-      return `${log.formattedTime} - ${this.getActionText(log.action)} - ${log.details}`;
+      return `${log.formattedTime} - ${this.getActionText(log.type)} - ${log.detail || '无详情'}`;
     }).join('\n');
 
     wx.setClipboardData({

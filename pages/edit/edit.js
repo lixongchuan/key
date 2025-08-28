@@ -455,7 +455,9 @@ Page({
 
               // 记录操作日志
               if (this.data.isEditMode) {
-                  app.addAuditLog('edit_password', `编辑了密码条目: ${dataToSave.title}`);
+                  // 编辑模式：记录具体修改的内容
+                  const changes = this.getItemChanges(dataToSave);
+                  app.addAuditLog('edit_password', `编辑了密码条目"${dataToSave.title}"${changes}`);
               } else {
                   app.addAuditLog('add_password', `添加了新密码条目: ${dataToSave.title}`);
               }
@@ -700,4 +702,80 @@ Page({
       console.error("生成单条凭证二维码失败:", e);
     }
   },
+
+  // 获取条目变更详情
+  getItemChanges(newData) {
+    try {
+      // 由于原始数据已经加载，我们需要从当前数据状态中获取原始值
+      const originalData = {
+        title: this.data.formData.title,
+        username: this.data.formData.username,
+        url: this.data.formData.url || '',
+        password: this.data.originalPassword || '',
+        notes: this.data.formData.notes || '',
+        customFields: this.data.formData.customFields || []
+      };
+
+      const changes = [];
+
+      // 比较基本字段
+      const fieldsToCompare = [
+        { key: 'title', name: '标题' },
+        { key: 'username', name: '用户名' },
+        { key: 'url', name: '网址' },
+        { key: 'password', name: '密码' },
+        { key: 'notes', name: '备注' }
+      ];
+
+      fieldsToCompare.forEach(field => {
+        const oldValue = originalData[field.key] || '';
+        const newValue = newData[field.key] || '';
+
+        if (oldValue !== newValue) {
+          if (field.key === 'password') {
+            // 密码字段特殊处理
+            changes.push(`修改了密码`);
+          } else {
+            const oldDisplay = oldValue.length > 10 ? `${oldValue.substring(0, 10)}...` : oldValue;
+            const newDisplay = newValue.length > 10 ? `${newValue.substring(0, 10)}...` : newValue;
+            changes.push(`${field.name}: "${oldDisplay}" → "${newDisplay}"`);
+          }
+        }
+      });
+
+      // 比较自定义字段
+      const oldCustomFields = originalData.customFields || [];
+      const newCustomFields = newData.customFields || [];
+
+      if (oldCustomFields.length !== newCustomFields.length) {
+        changes.push(`自定义字段数量: ${oldCustomFields.length} → ${newCustomFields.length}`);
+      } else {
+        // 比较每个自定义字段
+        for (let i = 0; i < newCustomFields.length; i++) {
+          const oldField = oldCustomFields[i] || {};
+          const newField = newCustomFields[i] || {};
+
+          if (oldField.label !== newField.label) {
+            changes.push(`自定义字段${i + 1}标签: "${oldField.label || ''}" → "${newField.label || ''}"`);
+          }
+          if (oldField.value !== newField.value) {
+            const oldValueDisplay = (oldField.value || '').length > 10 ?
+              `${(oldField.value || '').substring(0, 10)}...` : (oldField.value || '');
+            const newValueDisplay = (newField.value || '').length > 10 ?
+              `${(newField.value || '').substring(0, 10)}...` : (newField.value || '');
+            changes.push(`自定义字段${i + 1}值: "${oldValueDisplay}" → "${newValueDisplay}"`);
+          }
+        }
+      }
+
+      if (changes.length === 0) {
+        return '（无变更）';
+      }
+
+      return `，变更内容: ${changes.join(', ')}`;
+    } catch (error) {
+      console.error('获取变更详情失败:', error);
+      return '（获取变更详情失败）';
+    }
+  }
 });

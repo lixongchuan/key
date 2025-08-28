@@ -31,7 +31,7 @@
           <view class="log-item" wx:for="{{auditLogs}}" wx:key="timestamp">
             <!-- 时间线 -->
             <view class="timeline">
-              <view class="timeline-dot {{item.action}}"></view>
+              <view class="timeline-dot {{item.type}}"></view>
               <view class="timeline-line"></view>
             </view>
 
@@ -39,11 +39,11 @@
             <view class="log-content">
               <view class="log-header">
                 <text class="log-time">{{item.formattedTime}}</text>
-                <view class="log-action {{item.action}}">
-                  <text class="action-text">{{getActionText(item.action)}}</text>
+                <view class="log-action {{item.type}}">
+                  <text class="action-text">{{getActionText(item.type)}}</text>
                 </view>
               </view>
-              <view class="log-details">{{item.details}}</view>
+              <view class="log-details">{{item.detail || '无详情'}}</view>
             </view>
           </view>
         </scroll-view>

@@ -49,12 +49,96 @@ Page({
   },
 
   onShow() {
+    console.log('=== 首页显示 ===');
+
     // 检查是否需要强制跳转到解锁页
     const sessionKey = app.globalData.sessionKey;
     if (!sessionKey || app.globalData.isLocked) {
+      console.log('需要跳转到解锁页');
       wx.redirectTo({ url: '/pages/unlock/unlock' });
       return;
     }
+
+    // [关键修复] 确保首页绝对不会触发生物识别 - 五层防护系统
+    console.log('首页初始化：启动多层生物识别防护系统');
+
+    // 第一层防护：立即清理任何可能的生物识别状态
+    this.forceCleanupBiometricStates();
+
+    // 第二层防护：设置全局防护标志，确保任何状态检查都会失败
+    if (app.globalData) {
+      app.globalData.biometricUnlockCompleted = true;
+      app.globalData.biometricCheckInProgress = false;
+      app.globalData.isLocked = false; // 确保应用已解锁状态
+      app.globalData.unlockPageReady = false; // 确保不在解锁页面
+    }
+
+    // 第三层防护：禁用首页的生物识别检查（即使有遗漏）
+    if (app.biometricStateManager) {
+      // 重置状态管理器，防止任何自动检查
+      app.biometricStateManager.resetBiometricState();
+      app.biometricStateManager.markBiometricUnlockCompleted();
+
+      // [新增] 重写关键方法，确保首页绝对安全
+      const originalCanPerformBiometricCheck = app.biometricStateManager.canPerformBiometricCheck;
+      app.biometricStateManager.canPerformBiometricCheck = function(ignoreCancelCheck = false) {
+        console.log('首页防护：拦截生物识别检查');
+        return false; // 首页绝对禁止
+      };
+
+      // 重写自动弹窗检查方法
+      const originalShouldAutoShowBiometricPrompt = app.biometricStateManager.shouldAutoShowBiometricPrompt;
+      app.biometricStateManager.shouldAutoShowBiometricPrompt = function(pageInstance, ignoreCancelCheck = false) {
+        console.log('首页防护：拦截自动弹窗检查');
+        return false; // 首页绝对禁止
+      };
+    }
+
+    // 第四层防护：清理所有可能的存储状态
+    try {
+      wx.removeStorageSync('biometric_user_cancelled');
+      wx.removeStorageSync('biometric_cancel_timestamp');
+    } catch (e) {
+      console.error('清理本地存储失败:', e);
+    }
+
+    // 第五层防护：[新增] 设置全局拦截器，防止任何异步操作触发生物识别
+    if (typeof wx !== 'undefined') {
+      // 拦截设备支持检查
+      if (wx.checkIsSupportSoterAuthentication) {
+        wx.checkIsSupportSoterAuthentication = function(options) {
+          console.log('首页防护：拦截设备支持检查');
+          if (options && options.fail) {
+            options.fail({ errMsg: '首页禁止生物识别' });
+          }
+          return;
+        };
+      }
+
+      // 拦截录入状态检查
+      if (wx.checkIsSoterEnrolledInDevice) {
+        wx.checkIsSoterEnrolledInDevice = function(options) {
+          console.log('首页防护：拦截录入状态检查');
+          if (options && options.fail) {
+            options.fail({ errMsg: '首页禁止生物识别' });
+          }
+          return;
+        };
+      }
+
+      // 拦截生物识别验证
+      if (wx.startSoterAuthentication) {
+        wx.startSoterAuthentication = function(options) {
+          console.log('首页防护：拦截生物识别验证');
+          if (options && options.fail) {
+            options.fail({ errMsg: '首页禁止生物识别' });
+          }
+          return;
+        };
+      }
+    }
+
+    console.log('首页五层生物识别防护系统已完全启用');
 
     // 快速初始化页面状态（避免UI闪烁）
     this.quickInitialize();
@@ -62,7 +146,7 @@ Page({
     // 统一的数据加载逻辑
     this.smartDataLoad();
 
-    // 延迟执行非关键操作
+    // 延迟执行非关键操作（已移除生物识别相关逻辑）
     setTimeout(() => {
       this.performBackgroundTasks();
     }, 100);
@@ -71,6 +155,11 @@ Page({
   onLoad() {
     // 页面加载时初始化用户资料
     this.loadUserProfile();
+
+    // [新增] 保存原始API引用，用于页面卸载时恢复
+    this._originalCheckSupport = wx.checkIsSupportSoterAuthentication;
+    this._originalCheckEnrolled = wx.checkIsSoterEnrolledInDevice;
+    this._originalStartAuth = wx.startSoterAuthentication;
   },
 
   // 快速初始化页面状态
@@ -246,130 +335,41 @@ Page({
 
   // 执行后台任务（不影响用户体验）
   performBackgroundTasks() {
-    // 检查生物识别状态（后台执行）
-    this.checkAndResetBiometrics();
+    // [修复] 移除生物识别相关逻辑，避免在首页触发生物识别弹窗
+    // 生物识别只应该在解锁页面处理
 
-    // 自动启用生物识别（如果支持且未启用）
-    this.autoEnableBiometricsIfNeeded();
+    // 其他后台任务可以在这里添加
+    console.log('首页后台任务执行完成');
   },
 
-  // 自动启用生物识别（简化流程）
-  autoEnableBiometricsIfNeeded() {
-    // 检查是否已经启用了生物识别
-    const biometricsEnabled = wx.getStorageSync('biometrics_enabled') || false;
-    const openid = wx.getStorageSync('wx_openid') || '';
-    const bioUnlockKey = `bio_unlock_${openid}`;
+  // [新增] 强制清理生物识别状态，确保首页绝对安全
+  forceCleanupBiometricStates() {
+    console.log('首页强制清理生物识别状态...');
 
-    if (!biometricsEnabled || wx.getStorageSync(bioUnlockKey)) {
-      return; // 已经启用或不需要启用
-    }
-
-    // 如果没有openid，生成一个模拟的（生产环境需要真实微信登录）
-    if (!openid) {
-      const newOpenid = 'sim_' + Math.random().toString(36).substr(2, 9);
-      wx.setStorageSync('wx_openid', newOpenid);
-    }
-
-    // 直接启用生物识别，无需用户验证（按用户要求）
-    this.enableBiometricsSilently();
-  },
-
-  // 静默启用生物识别
-  enableBiometricsSilently() {
     try {
-      const sessionKey = app.globalData.sessionKey;
-      if (!sessionKey) {
-        console.error('会话已过期，无法启用生物识别');
-        return;
+      // 1. 清理全局生物识别状态
+      if (app.globalData) {
+        app.globalData.biometricUnlockCompleted = true;
+        app.globalData.biometricCheckInProgress = false;
+        app.globalData.unlockPageReady = false;
       }
 
-      const openid = wx.getStorageSync('wx_openid') || '';
+      // 2. 清理本地存储中的取消记录（首页不需要）
+      wx.removeStorageSync('biometric_user_cancelled');
+      wx.removeStorageSync('biometric_cancel_timestamp');
 
-      // 生成设备盐
-      let deviceSalt = wx.getStorageSync('bio_device_salt');
-      if (!deviceSalt) {
-        deviceSalt = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
-        wx.setStorageSync('bio_device_salt', deviceSalt);
+      // 3. 如果有生物识别状态管理器，强制完成状态
+      if (app.biometricStateManager) {
+        app.biometricStateManager.resetBiometricState();
+        app.biometricStateManager.markBiometricUnlockCompleted();
       }
 
-      // 加密主密钥
-      const { deriveKey, encrypt } = require('../../utils/crypto-helper.js');
-      const BIO_KDF_TAG = 'bio.unlock.fixed.tag.v1';
-      const kbio = deriveKey(BIO_KDF_TAG, deviceSalt);
-      const enc_km = encrypt(sessionKey, kbio);
-
-      // 保存生物识别凭据
-      const record = {
-        enc_km,
-        createdAt: Date.now(),
-        version: 1
-      };
-      wx.setStorageSync(`bio_unlock_${openid}`, JSON.stringify(record));
-
-      // 开启生物识别总开关
-      wx.setStorageSync('biometrics_enabled', true);
-
-      // 静默启用，不显示提示（按用户要求）
-      console.log('生物识别已静默启用');
-
-      app.addAuditLog('enable_biometrics', '首页静默启用生物识别');
-
+      console.log('首页生物识别状态清理完成');
     } catch (e) {
-      console.error('启用生物识别失败:', e);
+      console.error('首页清理生物识别状态失败:', e);
     }
   },
 
-  // 检查生物识别状态并提供重置功能
-  checkAndResetBiometrics() {
-    try {
-      const biometricsEnabled = wx.getStorageSync('biometrics_enabled') || false;
-      const openid = wx.getStorageSync('wx_openid') || '';
-      const bioUnlockKey = `bio_unlock_${openid}`;
-      const hasBioCredential = !!wx.getStorageSync(bioUnlockKey);
-
-      console.log('生物识别状态检查:', {
-        biometricsEnabled,
-        hasOpenid: !!openid,
-        hasBioCredential,
-        openid: openid
-      });
-
-      // 如果生物识别开启但没有凭据，尝试重新启用
-      if (biometricsEnabled && openid && !hasBioCredential) {
-        console.log('发现生物识别状态不一致，尝试修复');
-        this.enableBiometricsSilently();
-      }
-
-    } catch (e) {
-      console.error('检查生物识别状态失败:', e);
-    }
-  },
-
-  // 提供生物识别重置功能（可通过特定方式触发）
-  resetBiometrics() {
-    try {
-      const openid = wx.getStorageSync('wx_openid') || '';
-      const bioUnlockKey = `bio_unlock_${openid}`;
-
-      // 清理生物识别相关数据
-      wx.removeStorageSync('biometrics_enabled');
-      wx.removeStorageSync('bio_device_salt');
-      if (openid) {
-        wx.removeStorageSync(bioUnlockKey);
-      }
-
-      // 重新启用生物识别
-      setTimeout(() => {
-        this.enableBiometricsSilently();
-      }, 1000);
-
-      console.log('生物识别已重置并重新启用');
-      app.addAuditLog('reset_biometrics', '用户重置并重新启用生物识别');
-
-    } catch (e) {
-      console.error('重置生物识别失败:', e);
-    }
-  },
 
   loadVaultData(callback) {
     // 避免重复加载
@@ -383,7 +383,7 @@ Page({
     // 延迟显示loading，避免快速加载时的闪烁
     let loadingTimer = setTimeout(() => {
       wx.showLoading({ title: '加载中...', mask: true });
-    }, 300);
+    }, 100); // 减少延迟时间，让用户更快看到加载状态
 
     try {
       const encryptedVault = wx.getStorageSync('vault');
@@ -743,7 +743,7 @@ Page({
       // 设置默认值
       userProfile = {
         avatarUrl: customAvatar || '/images/生成动漫风格头像.png',
-        nickName: userProfile.nickName || '風',
+        nickName: userProfile.nickName || '我爱钉钉',
         ...userProfile
       };
 
@@ -1527,6 +1527,18 @@ Page({
     // 清理定时器
     if (this.data.searchTimer) {
       clearTimeout(this.data.searchTimer);
+    }
+
+    // [新增] 恢复原始API方法
+    console.log('首页卸载：恢复原始生物识别API');
+    if (this._originalCheckSupport) {
+      wx.checkIsSupportSoterAuthentication = this._originalCheckSupport;
+    }
+    if (this._originalCheckEnrolled) {
+      wx.checkIsSoterEnrolledInDevice = this._originalCheckEnrolled;
+    }
+    if (this._originalStartAuth) {
+      wx.startSoterAuthentication = this._originalStartAuth;
     }
   },
 });
